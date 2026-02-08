@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .page-header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            color: #667eea;
+            font-weight: 600;
+            margin: 0;
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .table {
+            margin: 0;
+        }
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .table thead th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+        .btn-accept {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .btn-accept:hover {
+            background-color: #218838;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .bulk-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        .stats-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .stats-label {
+            color: #999;
+            font-size: 14px;
+        }
+        .action-buttons form {
+            margin: 0;
+        }
+        .action-buttons button {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .action-buttons button[type="submit"]:first-of-type {
+            background-color: #28a745;
+            color: white;
+        }
+        .action-buttons button[type="submit"]:first-of-type:hover {
+            background-color: #218838;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        .action-buttons button[type="submit"]:last-of-type {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-buttons button[type="submit"]:last-of-type:hover {
+            background-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/superadmin/dashboard">
+                <i class="fas fa-shield-alt"></i> SuperAdmin Panel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/superadmin/admin-requests">
+                            <i class="fas fa-list"></i> Admin Requests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/superadmin/logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1><i class="fas fa-user-tie"></i> Admin Access Requests</h1>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <!-- Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number"><%= data ? data.length : 0 %></div>
+                    <div class="stats-label">Pending Requests</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <form method="POST" action="/superadmin/acceptAllAdminRequest" style="margin: 0;" onsubmit="return confirm('Are you sure you want to accept all requests?');">
+                <button type="submit" class="btn btn-success btn-sm">
+                    <i class="fas fa-check-circle"></i> Accept All
+                </button>
+            </form>
+            <form method="POST" action="/superadmin/deleteAllAdminRequest?_method=DELETE" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete all requests?');">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i> Delete All
+                </button>
+            </form>
+        </div>
+
+        <style>
+            .bulk-actions .btn-success {
+                background-color: #28a745 !important;
+                color: white;
+            }
+            .bulk-actions .btn-success:hover {
+                background-color: #218838 !important;
+            }
+            .bulk-actions .btn-danger {
+                background-color: #dc3545 !important;
+                color: white;
+            }
+            .bulk-actions .btn-danger:hover {
+                background-color: #c82333 !important;
+            }
+        </style>
+
+        <!-- Requests Table -->
+        <% if (data && data.length > 0) { %>
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user"></i> Name</th>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <th><i class="fas fa-book"></i> Course</th>
+                            <th><i class="fas fa-phone"></i> Phone</th>
+                            <th><i class="fas fa-cogs"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach(user => { %>
+                            <tr>
+                                <td><strong><%= user.username %></strong></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.cource %></td>
+                                <td><%= user.phone || 'N/A' %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <form method="POST" action="/superadmin/acceptAdminRequest/<%= user._id %>" style="margin: 0;" onsubmit="return confirm('Are you sure?');">
+                                            <button type="submit" class="btn btn-accept btn-sm">
+                                                <i class="fas fa-check"></i> Accept
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="/superadmin/deleteAdminRequest/<%= user._id %>?_method=DELETE" style="margin: 0;" onsubmit="return confirm('Are you sure?');">
+                                            <button type="submit" class="btn btn-delete btn-sm">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="table-container empty-state">
+                <i class="fas fa-inbox"></i>
+                <h4>No Admin Requests</h4>
+                <p>All pending admin access requests have been processed.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

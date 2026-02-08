@@ -10,7 +10,7 @@ const adminAcessRequestScheema = new mongoose.Schema({
         require: true,
         unique: true
     },
-    hashPaaword: {
+    hashPassword: {
         type: String,
         require: true
     },
