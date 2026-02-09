@@ -61,16 +61,18 @@ class AuthController {
     static async login(req, res) {
         try {
             const { email, password } = req.body;
+            
             const user = await UserModel.findOne({ email });
             if (!user) {
                 return res.status(404).json({ message: "Account not registered" });
             }
-           
             const isMatch = await bcrypt.compare(password, user.hashPassword);
             if (!isMatch) {
                 return res.status(401).json({ message: "Invalid credentials" });
             }
+            console.log("user",user)
 
+            //i want send all userdata but nnot hashPassword
             const token = generateToken(user);
 
             // email

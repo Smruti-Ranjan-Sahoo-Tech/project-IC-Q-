@@ -113,7 +113,7 @@ class SuperadminController {
             await UserModel.create({
                 username: reqUser.username,
                 email: reqUser.email,
-                hashPassword: reqUser.password,
+                hashPassword: reqUser.hashPassword,
                 role: "admin",
                 phone: reqUser.phone,
                 cource: reqUser.cource

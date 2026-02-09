@@ -3,28 +3,28 @@ const mongoose = require('mongoose')
 const adminAcessRequestScheema = new mongoose.Schema({
     username: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     hashPassword: {
         type: String,
-        require: true
+        required: true
     },
     role: {
         type: String,
-        require: true
+        required: true
     },
     phone: {
         type: Number,
-        require: true
+        required: true
     },
     cource: {
         type: String,
-        require: true
+        required: true
     }
 })
 

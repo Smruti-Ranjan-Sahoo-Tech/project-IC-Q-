@@ -1,5 +1,6 @@
 const express=require('express')
 const authRouter=require('./routes/auth.routes')
+const adminRouter=require('./routes/admin.routes')
 const superadminRouter=require('./routes/superadmin.routes')
 const path = require("path");
 const cors=require('cors')
@@ -29,6 +30,7 @@ app.use(cors());
 
 // Routes
 app.use("/auth", authRouter);
+app.use("/admin", adminRouter);
 app.use("/superadmin", superadminRouter);
 
 app.get("/", (req, res) => {
