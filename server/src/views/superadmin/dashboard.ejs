@@ -166,9 +166,9 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
+        <div class="container-lg">
             <a class="navbar-brand" href="/superadmin/dashboard">
-                <i class="fas fa-shield-alt"></i> SuperAdmin Panel
+                <i class="fas fa-crown"></i> SuperAdmin
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -176,14 +176,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/superadmin/admin-requests">
-                            <i class="fas fa-list"></i> Admin Requests
-                        </a>
+                        <a class="nav-link" href="/superadmin/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/superadmin/logout">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
+                        <a class="nav-link" href="/superadmin/admin-requests">Admin Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/superadmin/getAllAdminDetails">Admin Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/superadmin/logout">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -192,14 +194,14 @@
 
     <!-- Page Header -->
     <div class="page-header">
-        <div class="container-fluid">
+        <div class="container-lg">
             <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
             <p>Welcome back to the SuperAdmin Panel</p>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="container-fluid">
+    <div class="container-lg">
         <!-- Welcome Section -->
         <div class="welcome-section">
             <h2><i class="fas fa-crown"></i> Welcome, SuperAdmin!</h2>
@@ -226,17 +228,38 @@
                 <div class="col-lg-6">
                     <div class="dashboard-card">
                         <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-title">Admin Details</div>
+                        <p class="card-description">View and manage all admin accounts in the system</p>
+                        <a href="/superadmin/getAllAdminDetails" class="btn-primary-custom">
+                            <i class="fas fa-arrow-right"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards - Second Row -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
                             <i class="fas fa-cog"></i>
                         </div>
                         <div class="card-title">System Settings</div>
                         <p class="card-description">Configure system settings and preferences</p>
                         <button class="btn-primary-custom" disabled>
                             <i class="fas fa-lock"></i> Coming Soon
-                        </button>
+                        </buta href="/superadmin/getAllAdminDetails">
+                                <i class="fas fa-users"></i> View All Admins
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <ton>
                     </div>
                 </div>
-            </div>
-        </div>
 
         <!-- Quick Links Section -->
         <div class="row mt-4">

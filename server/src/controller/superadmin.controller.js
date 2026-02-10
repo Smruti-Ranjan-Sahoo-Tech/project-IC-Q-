@@ -12,7 +12,7 @@ class SuperadminController {
             email === process.env.S_ADMIN_EMAIL &&
             password === process.env.SUPERADMIN_PASSWORD
         ) {
-           const token=generateToken({ email, role: "superadmin" });
+            const token = generateToken({ email, role: "superadmin" });
             res.cookie("token", token, {
                 httpOnly: true,
                 sameSite: "strict",
@@ -51,7 +51,7 @@ class SuperadminController {
                     await UserModel.create({
                         username: reqUser.username,
                         email: reqUser.email,
-                        hashPassword: reqUser.password,
+                        hashPassword: reqUser.hashPassword,
                         role: "admin",
                         phone: reqUser.phone,
                         cource: reqUser.cource
@@ -80,7 +80,7 @@ class SuperadminController {
     static async DeleteAllAdminRequest(req, res) {
         try {
             const requests = await AdminAcessRequestModel.find();
-            
+
             if (requests.length > 0) {
                 await Promise.all(
                     requests.map(async (reqUser) => {
@@ -92,7 +92,7 @@ class SuperadminController {
                     })
                 );
             }
-            
+
             await AdminAcessRequestModel.deleteMany();
             return res.redirect("/superadmin/admin-requests");
         } catch (error) {
@@ -157,6 +157,40 @@ class SuperadminController {
             console.log("DeleteAdminRequest:", error.message);
             return res.redirect("/superadmin/admin-requests");
         }
+    }
+    static async getAllAdminDetails(req, res) {
+        try {
+            const admins = await UserModel.find({ role: "admin" })
+            return res.render("superadmin/admin-details", { data: admins })
+
+        } catch (error) {
+            console.log("getAllAdminDetails:", error.message);
+            return res.redirect("/superadmin/admin-details");
+
+        }
+    }
+    static async adminDelete(req, res) {
+        const { id } = req.params
+        try {
+            const deleted = await UserModel.findByIdAndDelete(id)
+            if (!deleted) {
+                return res.status(404).json({ message: "Admin not found" })
+            }
+            EmailService(
+                deleted.email,
+                "Admin Account Deleted",
+                `<p>Hello ${deleted.username},</p><p>Your admin account has been deleted by the superadmin.</p>`
+            );
+            return res.redirect("/superadmin/admin-details")
+        } catch (error) {
+            console.log("DeleteAdminRequest:", error.message);
+            return res.redirect("/superadmin/admin-details");
+        }
+
+    }
+    static async logout(req, res) {
+        res.clearCookie('token');
+        res.redirect('/superadmin/login');
     }
 }
 
