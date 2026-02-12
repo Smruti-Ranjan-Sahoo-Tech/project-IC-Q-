@@ -1,4 +1,4 @@
-const AdminAcessRequestModel = require("../models/AdminAccessRequest.model.js");
+const AdminAcessRequestModel = require("../models/AdminAccessRequest.model.js.js");
 const UserModel = require("../models/user.model");
 const EmailService = require("../config/email.config.js");
 const generateToken = require("../utils/generateToken.js");

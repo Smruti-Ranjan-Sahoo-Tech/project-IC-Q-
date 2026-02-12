@@ -1,4 +1,4 @@
-const AdminAcessRequestModel = require("../models/AdminAccessRequest.model.js");
+const AdminAcessRequestModel = require("../models/AdminAccessRequest.model.js.js");
 const UserModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -112,7 +112,9 @@ class AuthController {
             if (!user) return res.status(404).json({ message: "No account with that email" });
 
             const token = jwt.sign({ id: user._id }, process.env.JWT_SERVER_SECREAT, { expiresIn: "1h" });
-            const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+            console.log("forgotPaaword data:",process.env.CLIENT_URL)
+            const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+            console.log(resetUrl)
 
              EmailService(email, "Password Reset", `<p>Hello ${user.username},</p><p>Click <a href=\"${resetUrl}\">here</a> to reset your password. The link expires in 1 hour.</p>`);
 

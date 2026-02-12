@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore'
-import Rudra from '../components/Rudra'
 
 const Home = () => {
   const { isLoggedIn, role } = useAuthStore()
