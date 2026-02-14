@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/useAuthStore'
-import { useTheme } from '../../context/ThemeContext'
 import HamburgerMenu from '../HamburgerMenu/HamburgerMenu'
 
 const Navbar = ({ mobileMenuOpen, toggleMenu }) => {
-  const { isLoggedIn, role, logout } = useAuthStore()
-  const { isDark, toggleTheme } = useTheme()
+  const { isLoggedIn, role, logout, user } = useAuthStore()
 
   const handleLogout = async () => {
     await logout()
+  }
+
+  const getInitial = () => {
+    return user?.username ? user.username.charAt(0).toUpperCase() : '?'
   }
 
   return (
@@ -47,23 +49,16 @@ const Navbar = ({ mobileMenuOpen, toggleMenu }) => {
 
         {/* Right Section */}
         <div className="hidden md:flex items-center gap-4">
-          {/* Theme Toggle */}
-          {/* <button
-            onClick={toggleTheme}
-            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:rotate-20"
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button> */}
+          {/* Theme toggle removed (app uses light theme) */}
 
           {isLoggedIn ? (
             <>
               <span className="px-3 py-1.5 text-xs font-bold rounded-full bg-gradient-to-r from-emerald-200 to-emerald-300 dark:from-emerald-600 dark:to-emerald-700 text-emerald-700 dark:text-emerald-100 uppercase tracking-wider shadow-md dark:shadow-lg transition-all duration-300">
                 {role?.toUpperCase()}
               </span>
-              <Link to="/profile" className="text-gray-700 dark:text-gray-300 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
-                Profile
-              </Link>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-all duration-300 cursor-pointer">
+                {getInitial()}
+              </div>
               <button 
                 onClick={handleLogout}
                 className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0"

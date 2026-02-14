@@ -11,7 +11,7 @@ class AuthController {
         try {
             const { username, email, password, role, phone, cource, passoutYear } = req.body;
 
-            if (!username || !email || !password || !role || !phone || !cource) {
+            if (!username || !email  || !role || !phone || !cource) {
                 return res.status(400).json({ message: "All fields are required" });
             }
 
@@ -20,6 +20,32 @@ class AuthController {
                 return res.status(409).json({ message: "User already registered" });
             }
 
+            if (role === "admin") {
+                const adminReqExist = await AdminAcessRequestModel.findOne({ email });
+                if (adminReqExist) {
+                    return res.status(409).json({ message: "Admin request already exists" });
+                }
+
+                const newAdminRequest = await AdminAcessRequestModel.create({ username, email, role, phone, cource });
+
+                // Professional email to super admin about new admin request
+                await EmailService(  process.env.S_ADMIN_EMAIL, "New Admin Access Request Received",  
+                    `<p>Dear SuperAdmin,</p>
+                    <p>A new admin access request has been received from:</p>
+                    <p><strong>Name:</strong> ${username}<br/>
+                    <strong>Email:</strong> ${email}</p>
+                    <p>Please review this request in your dashboard and take appropriate action.</p>
+                    <p>Best regards,<br/>InstaTV System</p>`);
+
+                // Professional email to requesting admin
+                await EmailService(email,"Admin Application Under Review", 
+                    `<p>Dear ${username},</p>
+                    <p>Thank you for submitting your admin account request. Your application has been received and is currently under review by our SuperAdministrator.</p>
+                    <p>We will notify you via email once your request has been processed. Please wait for our confirmation email which will contain your account setup instructions.</p>
+                    <p>Best regards,<br/>InstaTV Team</p>`);
+
+                return res.status(202).json({ message: "Your admin request is under review", newAdminRequest });
+            }
             const hashPassword = await bcrypt.hash(password, Number(process.env.SALT));
 
             // ADMIN
@@ -31,24 +57,38 @@ class AuthController {
 
                 const newAdminRequest = await AdminAcessRequestModel.create({ username, email,  hashPassword, role, phone, cource });
 
-                // email to super admin
-                await EmailService(  process.env.S_ADMIN_EMAIL, "New Admin Access Request",  `<p>New admin request received from <b>${username}</b> (${email})</p>`);
+                // Professional email to super admin about new admin request
+                await EmailService(  process.env.S_ADMIN_EMAIL, "New Admin Access Request Received",  
+                    `<p>Dear SuperAdmin,</p>
+                    <p>A new admin access request has been received from:</p>
+                    <p><strong>Name:</strong> ${username}<br/>
+                    <strong>Email:</strong> ${email}</p>
+                    <p>Please review this request in your dashboard and take appropriate action.</p>
+                    <p>Best regards,<br/>InstaTV System</p>`);
 
-                // email to admin
-                await EmailService(email,"Admin Request Submitted", `<p>Hello ${username},</p><p>Your admin account request is under verification.</p>`);
+                // Professional email to requesting admin
+                await EmailService(email,"Admin Application Under Review", 
+                    `<p>Dear ${username},</p>
+                    <p>Thank you for submitting your admin account request. Your application has been received and is currently under review by our SuperAdministrator.</p>
+                    <p>We will notify you via email once your request has been processed. Please wait for our confirmation email which will contain your account setup instructions.</p>
+                    <p>Best regards,<br/>InstaTV Team</p>`);
 
                 return res.status(202).json({ message: "Your admin request is under review", newAdminRequest });
             }
 
             // USER
-            if (!passoutYear) {
-                return res.status(400).json({ message: "Passout year is required" });
+            if (!passoutYear || !password) {
+                return res.status(400).json({ message: "All field are required" });
             }
             await UserModel.create({ username, email,  hashPassword, role, phone, cource, passoutYear });
             
-            // email to user
+            // professional email to user
             await EmailService( email, "Registration Successful",
-                `<p>Hello ${username},</p><p>Your account has been created successfully.</p>`  );
+                `<p>Dear ${username},</p>
+                <p>Welcome to project-ic! Your account has been successfully created.</p>
+                <p>You can now log in to your account using your email and password.</p>
+                <p>If you have any questions or need assistance, please contact our support team.</p>
+                <p>Best regards,<br/>InstaTV Team</p>`  );
 
             return res.status(201).json({ message: "User registered successfully" });
 
@@ -68,15 +108,17 @@ class AuthController {
             if (!user) {
                 return res.status(404).json({ message: "Account not registered" });
             }
+            if(user.isBlocked){
+                return res.status(403).json({ message: "Your account is blocked. Please contact support." });
+            }
             const isMatch = await bcrypt.compare(password, user.hashPassword);
             if (!isMatch) {
                 return res.status(401).json({ message: "Invalid credentials" });
             }
             console.log("user",user)
-
+            
             //i want send all userdata but nnot hashPassword
             const token = generateToken(user);
-
             // send login notification asynchronously so response isn't delayed
             EmailService(email, "Login Successful", `<h3>Hello ${user.username}</h3><p>You logged in successfully.</p>`).catch(err => console.log("EmailSendError:", err.message));
             res.cookie("token", token, {
@@ -86,7 +128,9 @@ class AuthController {
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             });
             console.timeEnd('login')
-            return res.status(200).json({ message: "Login successful",  role:user.role });
+            const userWithoutPassword = user.toObject();
+            delete userWithoutPassword.hashPassword;
+            return res.status(200).json({ message: "Login successful", role: user.role, user: userWithoutPassword });
 
         } catch (error) {
             console.log("LoginControllerError:",error.message)

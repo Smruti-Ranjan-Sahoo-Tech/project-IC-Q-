@@ -11,22 +11,23 @@ export const useTheme = () => {
 }
 
 export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved) return saved === 'dark'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-  })
+  // Force light theme across the app.
+  // Keep a stable API shape so components using the hook don't break.
+  const [isDark] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
-    if (isDark) {
-      document.documentElement.classList.add('dark-theme')
-    } else {
-      document.documentElement.classList.remove('dark-theme')
+    const root = document.documentElement
+    // Ensure any leftover dark class is removed
+    root.classList.remove('dark')
+    try {
+      localStorage.setItem('theme', 'light')
+    } catch (e) {
+      // ignore localStorage errors in non-browser environments
     }
-  }, [isDark])
+  }, [])
 
-  const toggleTheme = () => setIsDark(!isDark)
+  // No-op toggle to preserve consumers calling it
+  const toggleTheme = () => {}
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>

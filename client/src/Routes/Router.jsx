@@ -39,9 +39,9 @@ const Router = () => {
       <Route path="/update-profile" element={<UpdateProfile />} />
       <Route path="/profile" element={<Profile />} />
 
-      {/* Dashboard Routes */}
-      <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-      <Route path="/user" element={<UserRoute><UserDashboard /></UserRoute>} />
+      {/* Dashboard Routes with Nested Routing */}
+      <Route path="/admin/*" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+      <Route path="/user/*" element={<UserRoute><UserDashboard /></UserRoute>} />
 
       {/* Catch All */}
       <Route path="*" element={<Navigate to="/" replace />} />

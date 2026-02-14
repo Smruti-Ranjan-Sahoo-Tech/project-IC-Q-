@@ -8,6 +8,18 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Apply theme before React renders to prevent flash
+      const theme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      const isDark = theme ? theme === 'dark' : prefersDark
+
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

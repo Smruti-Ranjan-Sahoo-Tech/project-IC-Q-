@@ -5,6 +5,56 @@ import { toast } from "react-toastify"
 export const useAdminStore = create((set, get) => ({
     posts: [],
     loading: false,
+    dashBoardData: null,
+    dashBoardDataLoding: false,
+    allUser:[],
+    allUserLoading:false,
+    setFreezeUser:async(id)=>{
+        try {
+            const res=await axiosInstance.put(`/admin/freezeUser/${id}`)
+            toast.success(res.data.message || "User status updated successfully")
+            // Refresh user list
+            get().setAllUser()
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        }
+    },
+    setUnFreezeUser:async(id)=>{
+        try {
+            const res=await axiosInstance.put(`/admin/unfreezeUser/${id}`)
+            toast.success(res.data.message || "User status updated successfully")
+            // Refresh user list
+            get().setAllUser()
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        }
+    },
+
+
+    setAllUser:async()=>{
+        set({ allUserLoading: true })
+           try {
+            const {data}=await axiosInstance.get("/admin/getalluser")
+            set({ allUser: data.data || [] })
+           } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+           }finally{
+            set({ allUserLoading: false })
+           }
+    },
+    
+     getDashboardData: async () => {
+        set({ dashBoardDataLoding: true })
+        try {
+            const res= await axiosInstance.get("/admin/dashboard-data")
+            set({ dashBoardData: res.data.data })
+        } catch (error) {
+         toast.error(error?.response?.data?.message || error.message)
+        }
+        finally{
+          set({ dashBoardDataLoding: false })
+        }
+     },
 
     getAllPosts: async () => {
         set({ loading: true })
@@ -21,6 +71,7 @@ export const useAdminStore = create((set, get) => ({
     createPost: async (data) => {
         set({ loading: true })
         try {
+            console.log("Creating post with data:", data)
             const res = await axiosInstance.post("/admin/create-post", data)
             toast.success(res.data.message || "Post created successfully")
             // Refresh posts list

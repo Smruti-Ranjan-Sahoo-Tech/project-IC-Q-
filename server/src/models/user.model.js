@@ -12,7 +12,7 @@ const userSchema=new mongoose.Schema({
     },
     hashPassword:{
        type:String,
-       required:true
+       required:false
     },
     role:{
         type:String,
@@ -28,7 +28,13 @@ const userSchema=new mongoose.Schema({
     },
     passoutYear:{
         type:Date
+    },
+    isBlocked:{
+        type:Boolean,
+        default:false
     }
+},{
+    timestamps:true
 })
 
 const UserModel=mongoose.model("User",userSchema)

@@ -15,11 +15,15 @@ const postSchema = new mongoose.Schema(
     questionType: {
       type: String,
       required: true,
-      enum: [ "Subjective", "Coding"],
+      enum: [ "Interview", "Coding", "Subjective"],
     },
     cource:{
         type:String,
         required:true
+    },
+    subject:{
+          type:String,
+          required:true
     },
     writtenBy: {
       type: mongoose.Schema.Types.ObjectId,

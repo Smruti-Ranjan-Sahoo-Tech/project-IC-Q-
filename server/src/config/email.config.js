@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 
+// Create transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -8,85 +9,137 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-console.log("Email Service Loaded");
+console.log("✅ Email Service Loaded");
 
-// reusable HTML template
+
+// Professional Premium Email Template
 const emailTemplate = (title, content) => `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f8;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: #ffffff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .header {
-      background: #4f46e5;
-      color: #ffffff;
-      padding: 16px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .content {
-      padding: 24px;
-      color: #333333;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    .content p {
-      margin: 0 0 12px;
-    }
-    .footer {
-      background: #f9fafb;
-      text-align: center;
-      padding: 12px;
-      font-size: 12px;
-      color: #6b7280;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
 </head>
-<body>
-  <div class="container">
-    <div class="header">${title}</div>
-    <div class="content">
-      ${content}
-    </div>
-    <div class="footer">
-      © ${new Date().getFullYear()} Your App. All rights reserved.
-    </div>
-  </div>
+
+<body style="margin:0;padding:0;background-color:#f2f4f6;font-family:Arial,Helvetica,sans-serif;">
+
+  <table width="100%" bgcolor="#f2f4f6" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+
+        <!-- Main Container -->
+        <table width="600" cellpadding="0" cellspacing="0" bgcolor="#ffffff"
+          style="
+            margin:30px auto;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+          ">
+
+          <!-- Header -->
+          <tr>
+            <td align="center"
+              style="
+                background:linear-gradient(90deg,#4f46e5,#6366f1);
+                color:#ffffff;
+                padding:20px;
+                font-size:22px;
+                font-weight:bold;
+              ">
+              ${title}
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="
+              padding:30px;
+              color:#333333;
+              font-size:15px;
+              line-height:1.7;
+            ">
+              ${content}
+            </td>
+          </tr>
+
+          <!-- Button -->
+          <tr>
+            <td align="center" style="padding-bottom:30px;">
+              <a href="#"
+                style="
+                  background:#4f46e5;
+                  color:#ffffff;
+                  padding:12px 24px;
+                  text-decoration:none;
+                  border-radius:6px;
+                  font-weight:bold;
+                  display:inline-block;
+                ">
+                Open InstaTV
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center"
+              style="
+                background:#f9fafb;
+                padding:20px;
+                font-size:12px;
+                color:#888888;
+              ">
+
+              © ${new Date().getFullYear()} InstaTV. All rights reserved.
+              <br><br>
+              This is an automated email. Please do not reply.
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>
 `;
 
+
+// Main Email Service Function
 const EmailService = async (email, subject_text, message) => {
-  const mailoption = {
-    from: `"Your App Team" <${process.env.GOOGLE_APP_EMAIL}>`,
+
+  const mailOptions = {
+    from: `"InstaTV Team" <${process.env.GOOGLE_APP_EMAIL}>`,
     to: email,
     subject: subject_text,
-    text: message.replace(/<[^>]*>?/gm, ""), // fallback text
+
+    // fallback text version
+    text: message.replace(/<[^>]*>?/gm, ""),
+
+    // HTML version
     html: emailTemplate(subject_text, message),
   };
 
   try {
-    const info = await transporter.sendMail(mailoption);
-    console.log("Email sent:", info.messageId);
+
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("✅ Email sent successfully");
+    console.log("Message ID:", info.messageId);
+
+    return true;
+
   } catch (error) {
-    console.log("Failed to send mail:", error.message);
+
+    console.error("❌ Email failed:", error.message);
+
+    return false;
+  
   }
+
 };
 
 module.exports = EmailService;

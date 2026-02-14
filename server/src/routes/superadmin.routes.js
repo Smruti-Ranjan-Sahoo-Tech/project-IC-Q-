@@ -27,6 +27,9 @@ router.delete('/deleteAdminRequest/:id', verifyToken, authorization("superadmin"
 router.get('/getAllAdminDetails', verifyToken, authorization("superadmin"), SuperadminController.getAllAdminDetails);
 router.delete('/adminDelete/:id', verifyToken, authorization("superadmin"), SuperadminController.adminDelete);
 
+router.post('/freezeAdmin/:id', verifyToken, authorization("superadmin"), SuperadminController.freezeAdmin);
+router.post('/unfreezeAdmin/:id', verifyToken, authorization("superadmin"), SuperadminController.unfreezeAdmin);
+
 router.get('/logout',verifyToken, authorization("superadmin"),SuperadminController.logout);
 
 module.exports=router

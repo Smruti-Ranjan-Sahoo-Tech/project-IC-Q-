@@ -97,24 +97,24 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Courses Section with Gradient Background */}
-      <section className="py-20 md:py-32 px-4 md:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900"></div>
+      {/* Courses Section with Gradient Background (light theme) */}
+      <section className="py-20 md:py-32 px-4 md:px-8 relative overflow-hidden bg-gray-50 transition-colors duration-300">
+        <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-40"></div>
         <div className="absolute top-20 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
         
         <div className="relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900">
             Popular Courses
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {['Express.js', 'React', 'Node.js', 'MongoDB', 'JavaScript', 'Web Development'].map(course => (
               <div 
                 key={course} 
-                className="bg-white/10 dark:bg-white/5 backdrop-blur-xl p-8 rounded-xl border border-white/20 hover:border-blue-400 hover:bg-white/15 transition-all duration-300 text-center text-white"
+                className="bg-white p-8 rounded-xl border border-gray-200 hover:border-blue-400 shadow-sm hover:shadow-lg transition-all duration-300 text-center text-slate-900"
               >
                 <div className="text-5xl mb-4">📖</div>
                 <h3 className="text-2xl font-semibold mb-2">{course}</h3>
-                <p className="text-white/80 mb-6">Master the fundamentals and advanced concepts</p>
+                <p className="text-slate-700 mb-6">Master the fundamentals and advanced concepts</p>
                 {isLoggedIn ? (
                   <Link 
                     to="/user" 

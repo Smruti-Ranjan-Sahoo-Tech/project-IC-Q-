@@ -44,14 +44,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <nav className={`fixed left-0 top-20 w-3/4 md:w-72 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-transform duration-300 z-40 overflow-y-auto ${isOpen ? 'translate-x-0' : '-translate-x-full'} shadow-lg dark:shadow-2xl`}>
 
         {/* Sidebar Header */}
-        <div className="sticky top-0 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex justify-between items-center">
+        <div className="sticky top-0 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex justify-between items-center gap-3">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Navigation</h3>
-          <button
-            className="text-2xl text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors duration-300"
-            onClick={toggleSidebar}
-          >
-            ✕
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="text-2xl text-gray-500 hover:text-gray-800 transition-colors duration-300"
+              onClick={toggleSidebar}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Sidebar Menu */}

@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/useAuthStore'
 import { useNavigate, Link } from 'react-router-dom'
 
 const Register = () => {
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -12,9 +13,11 @@ const Register = () => {
     passoutYear: '',
     role: 'user'
   })
+
   const register = useAuthStore(state => state.register)
   const loading = useAuthStore(state => state.loading)
   const navigate = useNavigate()
+
   const courses = ['MERN', 'JAVA', 'PYTHON', 'TESTING']
 
   const handleChange = (e) => {
@@ -25,25 +28,74 @@ const Register = () => {
     }))
   }
 
+  const selectRole = (role) => {
+    setFormData(prev => ({
+      ...prev,
+      role,
+      password: role === 'admin' ? '' : prev.password,
+      passoutYear: role === 'admin' ? '' : prev.passoutYear
+    }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await register(formData, navigate)
+
+    const submitData = { ...formData }
+
+    if (formData.role === 'admin') {
+      delete submitData.password
+      delete submitData.passoutYear
+    }
+
+    await register(submitData, navigate)
   }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-teal-100 via-cyan-100 to-blue-200 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900 flex items-center justify-center p-4 transition-colors duration-300 overflow-hidden py-10">
-      
+
       {/* Animated Blobs */}
       <div className="absolute top-20 left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
 
-      {/* Auth Card */}
+      {/* Card */}
       <div className="relative z-10 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl dark:shadow-2xl p-8 md:p-12 w-full max-w-md">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 text-center">
           Create Account
         </h2>
 
+        {/* Role Buttons */}
+        <div className="flex gap-3 mb-6">
+
+          <button
+            type="button"
+            onClick={() => selectRole('user')}
+            className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 ${
+              formData.role === 'user'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+            }`}
+          >
+            User
+          </button>
+
+          <button
+            type="button"
+            onClick={() => selectRole('admin')}
+            className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 ${
+              formData.role === 'admin'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+            }`}
+          >
+            Admin
+          </button>
+
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Username */}
           <input
             type="text"
             name="username"
@@ -54,6 +106,7 @@ const Register = () => {
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
           />
 
+          {/* Email */}
           <input
             type="email"
             name="email"
@@ -64,26 +117,18 @@ const Register = () => {
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
-          />
-
+          {/* Phone */}
           <input
             type="tel"
             name="phone"
-            placeholder="Phone Number"
+            placeholder="Phone"
             value={formData.phone}
             onChange={handleChange}
             required
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
           />
 
+          {/* Course */}
           <select
             name="cource"
             value={formData.cource}
@@ -91,45 +136,55 @@ const Register = () => {
             required
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
           >
-            <option value="">-- Select Course --</option>
+            <option value="">Select Course</option>
             {courses.map(c => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c}>{c}</option>
             ))}
           </select>
 
-          <input
-            type="date"
-            name="passoutYear"
-            value={formData.passoutYear}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
-          />
+          {/* Password (User only) */}
+          {formData.role === 'user' && (
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            />
+          )}
 
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+          {/* Passout Year (User only) */}
+          {formData.role === 'user' && (
+            <input
+              type="date"
+              name="passoutYear"
+              value={formData.passoutYear}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            />
+          )}
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 disabled:opacity-50"
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Registering...' : `Register as ${formData.role}`}
           </button>
+
         </form>
 
-        <p className="text-center text-gray-700 dark:text-gray-300 mt-8">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors duration-300">
+        <p className="text-center text-gray-700 dark:text-gray-300 mt-6">
+          Already have account?
+          <Link to="/login" className="text-blue-600 dark:text-blue-400 ml-2 font-semibold">
             Login here
           </Link>
         </p>
+
       </div>
     </div>
   )

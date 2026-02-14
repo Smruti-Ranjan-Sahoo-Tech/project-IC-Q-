@@ -12,11 +12,11 @@ export const useUserStore = create((set) => ({
         totalPages: 0
     },
 
-    getPostData: async (cource, questionType, page = 1, limit = 10) => {
+    getPostData: async (cource, questionType, page = 1, limit = 10, subject = "") => {
         set({ loading: true })
         try {
             const res = await axiosInstance.get(`/user/getpostdata/${cource}/${questionType}`, {
-                params: { page, limit }
+                params: { page, limit, subject }
             })
             set({
                 posts: res.data.posts,
