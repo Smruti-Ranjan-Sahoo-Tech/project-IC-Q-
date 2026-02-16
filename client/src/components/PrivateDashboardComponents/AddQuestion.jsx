@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useAdminStore } from "../../store/useAdminStore";
 import { useCourseStore } from "../../store/useCourseStore";
 import { Edit2, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const AddQuestion = () => {
-
   const {
     createPost,
     getAllPosts,
@@ -15,7 +14,7 @@ const AddQuestion = () => {
 
   const {
     subjects,
-    fetchSubjects,
+    fetchSubjectsForCourse,
     loading: loadingSubjects
   } = useCourseStore();
 
@@ -26,62 +25,40 @@ const AddQuestion = () => {
     question: "",
     answer: "",
     questionType: "Interview",
-    cource: "",
     subject: ""
   });
 
   /* ================= PAGINATION ================= */
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(10);
-
-  const courses = ["MERN", "PYTHON", "JAVA", "TESTING"];
+  const [postsPerPage] = useState(10);
 
   /* ================= INITIAL LOAD ================= */
 
   useEffect(() => {
-    fetchSubjects();
+    fetchSubjectsForCourse();
     getAllPosts();
   }, []);
-
-  /* ================= RESET SUBJECT WHEN COURSE CHANGES ================= */
-
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      subject: ""
-    }));
-
-    // fetch subjects for the selected course
-    if (formData.cource) {
-      fetchSubjects(formData.cource);
-    }
-
-  }, [formData.cource]);
 
   /* ================= HANDLE CHANGE ================= */
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
-
   };
 
   /* ================= HANDLE SUBMIT ================= */
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     if (
       !formData.question.trim() ||
       !formData.answer.trim() ||
-      !formData.cource ||
       !formData.subject
     ) {
       alert("Please fill all fields");
@@ -89,57 +66,42 @@ const AddQuestion = () => {
     }
 
     try {
-
       setLoading(true);
 
       if (editingId) {
-
         await updatePost(editingId, formData);
         setEditingId(null);
-
       } else {
-
         await createPost(formData);
-
       }
 
       setFormData({
         question: "",
         answer: "",
         questionType: "Interview",
-        cource: "",
         subject: ""
       });
 
       getAllPosts();
-
     } catch (error) {
-
       console.error(error);
       alert("Failed to save question");
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   /* ================= HANDLE EDIT ================= */
 
   const handleEdit = (post) => {
-
     setFormData({
       question: post.question,
       answer: post.answer,
       questionType: post.questionType,
-      cource: post.cource,
       subject: post.subject
     });
 
-    // ensure subjects for this course are loaded so dropdown shows the current subject
-    if (post.cource) fetchSubjects(post.cource);
+    fetchSubjectsForCourse();
 
     setEditingId(post._id);
 
@@ -147,40 +109,33 @@ const AddQuestion = () => {
       top: 0,
       behavior: "smooth"
     });
-
   };
 
   /* ================= HANDLE DELETE ================= */
 
   const handleDelete = async (id) => {
-
     if (!window.confirm("Delete this question?")) return;
 
     await deletePost(id);
     getAllPosts();
-
   };
 
   /* ================= CANCEL EDIT ================= */
 
   const handleCancelEdit = () => {
-
     setEditingId(null);
 
     setFormData({
       question: "",
       answer: "",
       questionType: "Interview",
-      cource: "",
       subject: ""
     });
-
   };
 
   /* ================= PAGINATION ================= */
 
   const filteredPosts = posts || [];
-
   const totalPosts = filteredPosts.length;
 
   const totalPages =
@@ -198,276 +153,178 @@ const AddQuestion = () => {
       ? totalPosts
       : startIndex + parseInt(postsPerPage);
 
-  const paginatedPosts =
-    filteredPosts.slice(startIndex, endIndex);
+  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
-
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
-
   };
 
   /* ================= UI ================= */
 
   return (
-
-    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
-
+    <div className="flex-1 h-full overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
       {/* HEADER */}
-
       <div className="mb-8">
-
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           {editingId ? "Edit Question" : "Add Question"}
         </h1>
-
       </div>
 
-
-      {/* FORM */}
-
-      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg max-w-2xl mb-10">
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-
-
-          {/* QUESTION */}
-
-          <textarea
-            name="question"
-            value={formData.question}
-            onChange={handleChange}
-            placeholder="Enter question..."
-            rows={4}
-            className="w-full p-3 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
-          />
-
-
-          {/* ANSWER */}
-
-          <textarea
-            name="answer"
-            value={formData.answer}
-            onChange={handleChange}
-            placeholder="Enter answer..."
-            rows={4}
-            className="w-full p-3 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
-          />
-
-
-          {/* TYPE COURSE SUBJECT */}
-
-          <div className="grid grid-cols-3 gap-4">
-
-
-            {/* TYPE */}
-
-            <select
-              name="questionType"
-              value={formData.questionType}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {/* FORM */}
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* QUESTION */}
+            <textarea
+              name="question"
+              value={formData.question}
               onChange={handleChange}
-              className="p-3 border rounded-lg dark:bg-slate-700"
-            >
-              <option value="Interview">Interview</option>
-              <option value="Coding">Coding</option>
-              <option value="Subjective">Subjective</option>
-            </select>
+              placeholder="Enter question..."
+              rows={4}
+              className="w-full p-3 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+            />
 
-
-            {/* COURSE */}
-
-            <select
-              name="cource"
-              value={formData.cource}
+            {/* ANSWER */}
+            <textarea
+              name="answer"
+              value={formData.answer}
               onChange={handleChange}
-              className="p-3 border rounded-lg dark:bg-slate-700"
-            >
-              <option value="">Select Course</option>
+              placeholder="Enter answer..."
+              rows={4}
+              className="w-full p-3 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+            />
 
-              {courses.map(course => (
-
-                <option key={course} value={course}>
-                  {course}
-                </option>
-
-              ))}
-
-            </select>
-
-
-            {/* SUBJECT */}
-
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              disabled={!formData.cource || loadingSubjects}
-              className="p-3 border rounded-lg dark:bg-slate-700"
-            >
-
-              <option value="">
-                {loadingSubjects
-                  ? "Loading..."
-                  : "Select Subject"}
-              </option>
-
-              {subjects.map((subject, index) => (
-
-                <option key={index} value={subject}>
-                  {subject}
-                </option>
-
-              ))}
-
-            </select>
-
-          </div>
-
-
-          {/* BUTTONS */}
-
-          <div className="flex gap-4">
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
-            >
-
-              {loading
-                ? "Saving..."
-                : editingId
-                ? "Update Question"
-                : "Add Question"}
-
-            </button>
-
-
-            {editingId && (
-
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="bg-gray-500 text-white px-6 rounded-lg"
+            {/* TYPE SUBJECT */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* TYPE */}
+              <select
+                name="questionType"
+                value={formData.questionType}
+                onChange={handleChange}
+                className="p-3 border rounded-lg dark:bg-slate-700"
               >
-                Cancel
-              </button>
+                <option value="Interview">Interview</option>
+                <option value="Coding">Coding</option>
+                <option value="Subjective">Subjective</option>
+              </select>
 
-            )}
-
-          </div>
-
-        </form>
-
-      </div>
-
-
-      {/* POSTS LIST */}
-
-      <div>
-
-        <h2 className="text-2xl font-bold mb-6 dark:text-white">
-          All Questions
-        </h2>
-
-
-        {paginatedPosts.map(post => (
-
-          <div
-            key={post._id}
-            className="bg-white dark:bg-slate-800 p-5 rounded-lg mb-4 shadow"
-          >
-
-            <div className="flex justify-between">
-
-              <div>
-
-                <h3 className="font-bold text-lg dark:text-white">
-                  {post.question}
-                </h3>
-
-                <p className="text-sm text-gray-500">
-                  {post.cource} • {post.subject}
-                </p>
-
-              </div>
-
-
-              <div className="flex gap-2">
-
-                <button
-                  onClick={() => handleEdit(post)}
-                  className="p-2 bg-blue-500 text-white rounded"
-                >
-                  <Edit2 size={16} />
-                </button>
-
-
-                <button
-                  onClick={() => handleDelete(post._id)}
-                  className="p-2 bg-red-500 text-white rounded"
-                >
-                  <Trash2 size={16} />
-                </button>
-
-              </div>
-
+              {/* SUBJECT */}
+              <select
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                disabled={loadingSubjects}
+                className="p-3 border rounded-lg dark:bg-slate-700"
+              >
+                <option value="">
+                  {loadingSubjects ? "Loading..." : "Select Subject"}
+                </option>
+                {subjects.map((subject, index) => (
+                  <option key={index} value={subject}>
+                    {subject}
+                  </option>
+                ))}
+              </select>
             </div>
 
-          </div>
+            {/* BUTTONS */}
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+              >
+                {loading
+                  ? "Saving..."
+                  : editingId
+                  ? "Update Question"
+                  : "Add Question"}
+              </button>
 
-        ))}
-
-      </div>
-
-
-      {/* PAGINATION */}
-
-      {totalPages > 1 && (
-
-        <div className="flex justify-center gap-2 mt-6">
-
-          <button
-            onClick={() =>
-              handlePageChange(currentPage - 1)
-            }
-          >
-            <ChevronLeft />
-          </button>
-
-
-          {[...Array(totalPages)].map((_, i) => (
-
-            <button
-              key={i}
-              onClick={() =>
-                handlePageChange(i + 1)
-              }
-            >
-              {i + 1}
-            </button>
-
-          ))}
-
-
-          <button
-            onClick={() =>
-              handlePageChange(currentPage + 1)
-            }
-          >
-            <ChevronRight />
-          </button>
-
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="bg-gray-500 text-white px-6 rounded-lg"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
         </div>
 
-      )}
+        {/* POSTS LIST */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-6 dark:text-white">
+            All Questions
+          </h2>
 
+          {paginatedPosts.map((post) => (
+            <div
+              key={post._id}
+              className="bg-slate-50 dark:bg-slate-900 p-5 rounded-lg mb-4 shadow"
+            >
+              <div className="flex justify-between gap-3">
+                <div>
+                  <h3 className="font-bold text-lg dark:text-white">
+                    {post.question}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {post.cource} - {post.subject}
+                  </p>
+                </div>
+
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => handleEdit(post)}
+                    className="p-2 bg-blue-500 text-white rounded"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(post._id)}
+                    className="p-2 bg-red-500 text-white rounded"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* PAGINATION */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-6">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                <ChevronLeft />
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                <ChevronRight />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
-
   );
-
 };
 
 export default AddQuestion;

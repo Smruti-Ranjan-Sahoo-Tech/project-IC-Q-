@@ -76,7 +76,7 @@ class SuperadminController {
                         <p>If the button above doesn't work, copy and paste this link in your browser:</p>
                         <p>${resetUrl}</p>
                         <p>Welcome to the team!</p>
-                        <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                        <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
                     );
                 })
             );
@@ -106,7 +106,7 @@ class SuperadminController {
                             `<p>Dear ${reqUser.username},</p>
                             <p>Thank you for your interest in becoming an admin. Unfortunately, your admin request has been declined at this time.</p>
                             <p>If you have any questions or would like more information, please feel free to contact our support team.</p>
-                            <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                            <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
                         );
                     })
                 );
@@ -158,7 +158,7 @@ class SuperadminController {
                 <p>If the button above doesn't work, copy and paste this link in your browser:</p>
                 <p>${resetUrl}</p>
                 <p>Welcome to the team!</p>
-                <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
             );
 
             return res.redirect("/superadmin/admin-requests");
@@ -185,7 +185,7 @@ class SuperadminController {
                 `<p>Dear ${deleted.username},</p>
                 <p>Thank you for your interest in becoming an admin. Unfortunately, your admin request has been declined at this time.</p>
                 <p>If you have any questions or would like more information, please feel free to contact our support team.</p>
-                <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
             );
 
             return res.redirect("/superadmin/admin-requests");
@@ -219,7 +219,7 @@ class SuperadminController {
                 `<p>Dear ${deleted.username},</p>
                 <p>We regret to inform you that your admin account has been terminated by the SuperAdmin.</p>
                 <p>If you believe this is a mistake or have any questions, please contact our support team.</p>
-                <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
             );
             return res.redirect("/superadmin/admin-details")
         } catch (error) {
@@ -256,7 +256,7 @@ class SuperadminController {
                     <p>Your admin account has been suspended by the SuperAdmin.</p>
                     <p>You are temporarily unable to access your admin dashboard and perform admin functions.</p>
                     <p>For more information or to appeal this decision, please contact our support team.</p>
-                    <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                    <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
                 );
     
                 return res.status(200).json({
@@ -294,7 +294,7 @@ class SuperadminController {
                     <p>Good news! Your admin account has been reactivated by the SuperAdmin.</p>
                     <p>You now have full access to your admin dashboard and can resume your administrative functions.</p>
                     <p>If you have any questions, please contact our support team.</p>
-                    <p>Best regards,<br/>InstaTV SuperAdmin Team</p>`
+                    <p>Best regards,<br/>Project-IC SuperAdmin Team</p>`
                 );
 
                 return res.status(200).json({
@@ -310,3 +310,4 @@ class SuperadminController {
 }
 
 module.exports = SuperadminController;
+

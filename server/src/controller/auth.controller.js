@@ -35,14 +35,14 @@ class AuthController {
                     <p><strong>Name:</strong> ${username}<br/>
                     <strong>Email:</strong> ${email}</p>
                     <p>Please review this request in your dashboard and take appropriate action.</p>
-                    <p>Best regards,<br/>InstaTV System</p>`);
+                    <p>Best regards,<br/>Project-IC System</p>`);
 
                 // Professional email to requesting admin
                 await EmailService(email,"Admin Application Under Review", 
                     `<p>Dear ${username},</p>
                     <p>Thank you for submitting your admin account request. Your application has been received and is currently under review by our SuperAdministrator.</p>
                     <p>We will notify you via email once your request has been processed. Please wait for our confirmation email which will contain your account setup instructions.</p>
-                    <p>Best regards,<br/>InstaTV Team</p>`);
+                    <p>Best regards,<br/>Project-IC Team</p>`);
 
                 return res.status(202).json({ message: "Your admin request is under review", newAdminRequest });
             }
@@ -64,14 +64,14 @@ class AuthController {
                     <p><strong>Name:</strong> ${username}<br/>
                     <strong>Email:</strong> ${email}</p>
                     <p>Please review this request in your dashboard and take appropriate action.</p>
-                    <p>Best regards,<br/>InstaTV System</p>`);
+                    <p>Best regards,<br/>Project-IC System</p>`);
 
                 // Professional email to requesting admin
                 await EmailService(email,"Admin Application Under Review", 
                     `<p>Dear ${username},</p>
                     <p>Thank you for submitting your admin account request. Your application has been received and is currently under review by our SuperAdministrator.</p>
                     <p>We will notify you via email once your request has been processed. Please wait for our confirmation email which will contain your account setup instructions.</p>
-                    <p>Best regards,<br/>InstaTV Team</p>`);
+                    <p>Best regards,<br/>Project-IC Team</p>`);
 
                 return res.status(202).json({ message: "Your admin request is under review", newAdminRequest });
             }
@@ -88,7 +88,7 @@ class AuthController {
                 <p>Welcome to project-ic! Your account has been successfully created.</p>
                 <p>You can now log in to your account using your email and password.</p>
                 <p>If you have any questions or need assistance, please contact our support team.</p>
-                <p>Best regards,<br/>InstaTV Team</p>`  );
+                <p>Best regards,<br/>Project-IC Team</p>`  );
 
             return res.status(201).json({ message: "User registered successfully" });
 
@@ -119,8 +119,6 @@ class AuthController {
             
             //i want send all userdata but nnot hashPassword
             const token = generateToken(user);
-            // send login notification asynchronously so response isn't delayed
-            EmailService(email, "Login Successful", `<h3>Hello ${user.username}</h3><p>You logged in successfully.</p>`).catch(err => console.log("EmailSendError:", err.message));
             res.cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
@@ -273,3 +271,4 @@ class AuthController {
 }
 
 module.exports = AuthController;
+

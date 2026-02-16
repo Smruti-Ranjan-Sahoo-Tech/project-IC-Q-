@@ -2,57 +2,47 @@ import React, { useState, useEffect } from "react";
 import { useUserStore } from "../../store/useUserStore";
 
 const UserMain = () => {
-  const { posts, loading, pagination, getPostData } = useUserStore();
+  const {
+    posts,
+    subjects,
+    loading,
+    subjectLoading,
+    pagination,
+    getPostData,
+    getSubjectsByCourse,
+    clearPosts
+  } = useUserStore();
+
   const [course, setCourse] = useState("");
   const [subject, setSubject] = useState("");
   const [questionType, setQuestionType] = useState("");
-  const [subjects, setSubjects] = useState([]);
-  const [loadingSubjects, setLoadingSubjects] = useState(false);
+  const [openQuestionId, setOpenQuestionId] = useState(null);
 
   const courses = ["MERN", "PYTHON", "JAVA", "TESTING"];
   const questionTypes = ["Interview", "Coding", "Subjective"];
 
-  // Fetch subjects when course changes
   useEffect(() => {
     if (course) {
-      fetchSubjects();
-    } else {
-      setSubjects([]);
+      getSubjectsByCourse(course);
       setSubject("");
+    } else {
+      setSubject("");
+      clearPosts();
     }
   }, [course]);
 
-  const fetchSubjects = async () => {
-    setLoadingSubjects(true);
-    try {
-      const response = await fetch("http://localhost:5000/admin/getCourseSubjects", {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
-        }
-      });
-      const data = await response.json();
-      setSubjects(data.subjects || []);
-    } catch (error) {
-      console.error("Failed to fetch subjects:", error);
-      setSubjects([]);
-    } finally {
-      setLoadingSubjects(false);
-    }
-  };
-
   const handleFetch = async () => {
     if (!course) return;
-    await getPostData(course, questionType, 1, 10, subject);
+    await getPostData(course, subject, questionType, 1, 10);
   };
 
   const handlePageChange = (page) => {
-    if (page < 1 || page > pagination.totalPages) return;
-    getPostData(course, questionType, page, 10, subject);
+    if (page < 1 || page > pagination.totalPages || !course) return;
+    getPostData(course, subject, questionType, page, 10);
   };
 
   return (
     <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
-      {/* Welcome Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           Learning Dashboard
@@ -62,13 +52,11 @@ const UserMain = () => {
         </p>
       </div>
 
-      {/* Filters */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 mb-8">
         <div className="flex flex-wrap gap-4 items-end">
-          {/* Course */}
           <div className="flex flex-col min-w-[200px]">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              📚 Course
+              Course
             </label>
             <select
               value={course}
@@ -82,19 +70,18 @@ const UserMain = () => {
             </select>
           </div>
 
-          {/* Subject */}
           <div className="flex flex-col min-w-[200px]">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              🎯 Subject
+              Subject
             </label>
             <select
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              disabled={!course || loadingSubjects}
+              disabled={!course || subjectLoading}
               className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
               <option value="">
-                {loadingSubjects ? "Loading..." : "All Subjects"}
+                {subjectLoading ? "Loading..." : "All Subjects"}
               </option>
               {subjects.map((subj) => (
                 <option key={subj} value={subj}>{subj}</option>
@@ -102,10 +89,9 @@ const UserMain = () => {
             </select>
           </div>
 
-          {/* Question Type */}
           <div className="flex flex-col min-w-[200px]">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              ❓ Question Type
+              Question Type
             </label>
             <select
               value={questionType}
@@ -119,18 +105,16 @@ const UserMain = () => {
             </select>
           </div>
 
-          {/* Fetch Button */}
           <button
             onClick={handleFetch}
             disabled={!course}
             className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-400 text-white font-semibold rounded-lg transition-all"
           >
-            🔍 Search
+            Search
           </button>
         </div>
       </div>
 
-      {/* Questions List */}
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-slate-200 dark:border-slate-700">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -145,50 +129,69 @@ const UserMain = () => {
         ) : posts && posts.length > 0 ? (
           <>
             <div className="p-6 space-y-4">
-              {posts.map((post, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-2">
-                        {post.question}
-                      </h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">
-                        <strong>Answer:</strong> {post.answer}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          post.questionType === 'Interview'
-                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
-                            : post.questionType === 'Coding'
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
-                            : 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200'
-                        }`}>
-                          {post.questionType}
-                        </span>
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200">
-                          {post.subject}
-                        </span>
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200">
-                          {post.cource}
+              {posts.map((post) => {
+                const isOpen = openQuestionId === post._id;
+                return (
+                  <div
+                    key={post._id}
+                    className="border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenQuestionId(isOpen ? null : post._id)}
+                      className="w-full text-left p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-slate-900 dark:text-white text-lg">
+                            {post.question}
+                          </h3>
+                          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                            Added by: <span className="font-medium text-slate-700 dark:text-slate-300">{post?.writtenBy?.username || "Admin"}</span>
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              post.questionType === "Interview"
+                                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+                                : post.questionType === "Coding"
+                                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+                                : "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200"
+                            }`}>
+                              {post.questionType}
+                            </span>
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200">
+                              {post.subject}
+                            </span>
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200">
+                              {post.cource}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-300 whitespace-nowrap">
+                          {isOpen ? "Hide Answer" : "View Answer"}
                         </span>
                       </div>
-                    </div>
+                    </button>
+
+                    {isOpen && (
+                      <div className="px-5 pb-5 border-t border-slate-200 dark:border-slate-700">
+                        <p className="pt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
+                          {post.answer}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Pagination */}
             <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex justify-center gap-2">
               <button
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 1}
                 className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg disabled:opacity-50"
               >
-                ← Previous
+                Previous
               </button>
               <span className="px-4 py-2 text-slate-900 dark:text-white">
                 Page {pagination.currentPage} of {pagination.totalPages}
@@ -198,17 +201,17 @@ const UserMain = () => {
                 disabled={pagination.currentPage === pagination.totalPages}
                 className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg disabled:opacity-50"
               >
-                Next →
+                Next
               </button>
             </div>
           </>
         ) : course ? (
           <div className="p-8 text-center text-slate-500">
-            <p>No questions found for {course} - {questionType}</p>
+            <p>No questions found for selected filters.</p>
           </div>
         ) : (
           <div className="p-8 text-center text-slate-500">
-            <p>Select a course and question type to view questions</p>
+            <p>Select a course and filters to view questions.</p>
           </div>
         )}
       </div>

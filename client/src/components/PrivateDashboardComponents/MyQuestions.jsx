@@ -33,8 +33,7 @@ const MyQuestions = () => {
   // ]
 
   return (
-    <div className='h-dvh overflow-scroll'>
-      <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
@@ -103,10 +102,10 @@ const MyQuestions = () => {
                   </td>
                   <td className="px-6 py-4 text-sm space-x-2">
                     <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
-                      ✏️ Edit
+                      Edit
                     </button>
                     <button className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors">
-                      🗑️ Delete
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -115,7 +114,6 @@ const MyQuestions = () => {
           </table>
         </div>
       </div>
-    </div>
     </div>
   )
 }

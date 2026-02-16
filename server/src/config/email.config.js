@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-console.log("✅ Email Service Loaded");
+console.log("Email Service Loaded");
 
 
 // Professional Premium Email Template
@@ -75,7 +75,7 @@ const emailTemplate = (title, content) => `
                   font-weight:bold;
                   display:inline-block;
                 ">
-                Open InstaTV
+                Open Project-IC
               </a>
             </td>
           </tr>
@@ -90,7 +90,7 @@ const emailTemplate = (title, content) => `
                 color:#888888;
               ">
 
-              © ${new Date().getFullYear()} InstaTV. All rights reserved.
+              (c) ${new Date().getFullYear()} Project-IC. All rights reserved.
               <br><br>
               This is an automated email. Please do not reply.
 
@@ -112,7 +112,7 @@ const emailTemplate = (title, content) => `
 const EmailService = async (email, subject_text, message) => {
 
   const mailOptions = {
-    from: `"InstaTV Team" <${process.env.GOOGLE_APP_EMAIL}>`,
+    from: `"Project-IC Team" <${process.env.GOOGLE_APP_EMAIL}>`,
     to: email,
     subject: subject_text,
 
@@ -127,14 +127,14 @@ const EmailService = async (email, subject_text, message) => {
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("✅ Email sent successfully");
+    console.log("Email sent successfully");
     console.log("Message ID:", info.messageId);
 
     return true;
 
   } catch (error) {
 
-    console.error("❌ Email failed:", error.message);
+    console.error("Email failed:", error.message);
 
     return false;
   
@@ -143,3 +143,4 @@ const EmailService = async (email, subject_text, message) => {
 };
 
 module.exports = EmailService;
+

@@ -1,57 +1,62 @@
-import React from 'react'
+﻿import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/useAuthStore'
+import { LayoutDashboard, User, LogOut } from 'lucide-react'
 
 const UserSidebar = () => {
   const location = useLocation()
   const { logout } = useAuthStore()
 
   const menuItems = [
-    { label: 'Dashboard', icon: '📚', path: '/user' },
-    // { label: 'My Questions', icon: '📝', path: '/user/my-questions' },
-    { label: 'Profile', icon: '👤', path: '/user/profile' }
+    { label: 'Dashboard', icon: LayoutDashboard, path: '/user' },
+    { label: 'Profile', icon: User, path: '/user/profile' }
   ]
 
   const isActive = (path) => location.pathname === path
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white h-screen sticky top-0 shadow-2xl">
-      {/* Header */}
-      <div className="p-6 border-b border-slate-700">
-        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
-          LH
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">Learning Dashboard</p>
+    <aside className="w-16 md:w-64 h-full overflow-hidden bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
+      <div>
+        {/* Header */}
+        <div className="h-16 flex items-center justify-center md:justify-start px-2 md:px-6 border-b border-slate-800">
+          <h1 className="text-2xl font-bold text-white">LH</h1>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="p-2 md:p-4 space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon
+            const active = isActive(item.path)
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center justify-center md:justify-start gap-0 md:gap-3 px-0 md:px-4 py-3 rounded-lg transition-all duration-200 group ${
+                  active
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Icon
+                  size={20}
+                  className={`${active ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}
+                />
+                <span className="hidden md:inline font-medium">{item.label}</span>
+              </Link>
+            )
+          })}
+        </nav>
       </div>
 
-      {/* Navigation Menu */}
-      <nav className="py-8">
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`flex items-center px-6 py-3 transition-all border-l-4 ${
-              isActive(item.path)
-                ? 'bg-gradient-to-r from-green-600 to-blue-600 border-green-400 text-white'
-                : 'border-transparent hover:bg-slate-700 text-slate-300'
-            }`}
-          >
-            <span className="text-xl mr-3">{item.icon}</span>
-            <span className="font-medium">{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-
-      {/* Divider */}
-      <div className="border-t border-slate-700"></div>
-
       {/* Logout Button */}
-      <div className="p-6">
+      <div className="p-2 md:p-4 border-t border-slate-800">
         <button
           onClick={logout}
-          className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2"
+          className="flex items-center justify-center md:justify-start gap-0 md:gap-3 w-full px-0 md:px-4 py-3 text-slate-400 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200"
         >
-          <span>🚪</span> Logout
+          <LogOut size={20} />
+          <span className="hidden md:inline">Logout</span>
         </button>
       </div>
     </aside>
@@ -59,3 +64,4 @@ const UserSidebar = () => {
 }
 
 export default UserSidebar
+

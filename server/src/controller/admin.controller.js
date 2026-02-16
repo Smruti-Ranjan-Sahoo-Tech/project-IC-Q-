@@ -201,9 +201,9 @@ class AdminController {
     }
     static async getCourseSubjects(req, res) {
     try {
-        // Allow client to request subjects for a specific course via query param
-        // Fallback to the authenticated user's course if query missing
-        const requestedCourse = (req.query.course || req.user?.cource || '').toString().trim();
+
+       
+        const requestedCourse = (req.user?.cource || '').toString().trim();
 
         // validation
         if (!requestedCourse) {

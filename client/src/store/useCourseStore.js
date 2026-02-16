@@ -35,6 +35,24 @@ export const useCourseStore = create((set) => ({
 
     }
   },
+  // fetch subjects for logged-in admin course (used in AddQuestion form)
+  fetchSubjectsForCourse: async () => {
+    try {
+      set({ loading: true });
+      const res = await axiosInstance.get("/admin/getCourseSubjects");
+      set({
+        subjects: res.data.subjects || [],
+        loading: false
+      });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(
+        error?.response?.data?.message ||
+        "Failed to fetch subjects"
+      );
+    }
+  },
+
 
   /* ================= ADD SUBJECT ================= */
 
