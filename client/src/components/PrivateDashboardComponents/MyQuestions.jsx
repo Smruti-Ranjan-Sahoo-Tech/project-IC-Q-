@@ -33,7 +33,7 @@ const MyQuestions = () => {
   // ]
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="flex-1 bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 p-4 sm:p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
@@ -46,7 +46,7 @@ const MyQuestions = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 border-l-4 border-teal-500">
           <p className="text-slate-600 dark:text-slate-400 text-sm">Total Questions</p>
           <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{myQuestions.length}</p>
         </div>
@@ -85,7 +85,7 @@ const MyQuestions = () => {
                     <p className="font-medium text-slate-900 dark:text-white">{question.question.substring(0, 50)}...</p>
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-200">
                       {question.type}
                     </span>
                   </td>
@@ -101,7 +101,7 @@ const MyQuestions = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm space-x-2">
-                    <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
+                    <button className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-xs rounded-lg transition-colors">
                       Edit
                     </button>
                     <button className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors">

@@ -185,6 +185,12 @@
                         <a class="nav-link" href="/superadmin/getAllAdminDetails">Admin Details</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/superadmin/pending-course-subjects">Subject Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/superadmin/pending-user-reviews">User Reviews</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/superadmin/logout">Logout</a>
                     </li>
                 </ul>
@@ -218,6 +224,7 @@
                             <i class="fas fa-user-check"></i>
                         </div>
                         <div class="card-title">Admin Requests</div>
+                        <div class="card-number"><%= stats?.pendingAdminRequestsCount || 0 %></div>
                         <p class="card-description">Review and manage pending admin access requests</p>
                         <a href="/superadmin/admin-requests" class="btn-primary-custom">
                             <i class="fas fa-arrow-right"></i> View Requests
@@ -237,12 +244,34 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Dashboard Cards - Second Row -->
-        <div class="stats-section">
-            <div class="row">
+                <div class="col-lg-6">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="card-title">Subject Requests</div>
+                        <div class="card-number"><%= stats?.pendingCourseSubjectsCount || 0 %></div>
+                        <p class="card-description">Review and approve pending course subject requests</p>
+                        <a href="/superadmin/pending-course-subjects" class="btn-primary-custom">
+                            <i class="fas fa-arrow-right"></i> View Requests
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="card-title">Pending User Reviews</div>
+                        <div class="card-number"><%= stats?.pendingUserReviewsCount || 0 %></div>
+                        <p class="card-description">Review and approve pending user-submitted company reviews</p>
+                        <a href="/superadmin/pending-user-reviews" class="btn-primary-custom">
+                            <i class="fas fa-arrow-right"></i> View Reviews
+                        </a>
+                    </div>
+                </div>
+
                 <div class="col-lg-6">
                     <div class="dashboard-card">
                         <div class="card-icon">
@@ -252,14 +281,11 @@
                         <p class="card-description">Configure system settings and preferences</p>
                         <button class="btn-primary-custom" disabled>
                             <i class="fas fa-lock"></i> Coming Soon
-                        </buta href="/superadmin/getAllAdminDetails">
-                                <i class="fas fa-users"></i> View All Admins
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <ton>
+                        </button>
                     </div>
                 </div>
+            </div>
+        </div>
 
         <!-- Quick Links Section -->
         <div class="row mt-4">

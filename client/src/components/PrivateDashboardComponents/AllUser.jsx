@@ -16,11 +16,11 @@ const AllUser = () => {
   }, []);
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="flex-1 bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 p-4 sm:p-6">
       
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
           All Users
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mt-2">
@@ -29,16 +29,16 @@ const AllUser = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-8">
         <StatCard
           title="Total Users"
           value={allUser.length}
-          color="border-blue-500"
+          color="border-teal-500"
         />
         <StatCard
           title="Active Users"
           value={allUser.filter((u) => !u.isBlocked).length}
-          color="border-green-500"
+          color="border-amber-500"
         />
         <StatCard
           title="Blocked Users"
@@ -48,7 +48,7 @@ const AllUser = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden border border-teal-100 dark:border-slate-800">
         <div className="p-6 border-b border-slate-200 dark:border-slate-700">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">
             User Directory
@@ -59,7 +59,7 @@ const AllUser = () => {
           <p className="p-6 text-center text-slate-500">Loading...</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[760px]">
               <thead className="bg-slate-50 dark:bg-slate-700">
                 <tr>
                   <Th>Name</Th>
@@ -105,14 +105,14 @@ const AllUser = () => {
                         {user.isBlocked ? (
                           <button
                             onClick={() => setUnFreezeUser(user._id)}
-                            className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg"
+                            className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white text-xs rounded-lg"
                           >
                             Unblock
                           </button>
                         ) : (
                           <button
                             onClick={() => setFreezeUser(user._id)}
-                            className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs rounded-lg"
+                            className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs rounded-lg"
                           >
                             Block
                           </button>

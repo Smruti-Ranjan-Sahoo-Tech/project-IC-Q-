@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
+import { toast } from 'react-toastify'
 
 const UserProfile = () => {
   const { user, role } = useAuthStore()
@@ -22,12 +23,12 @@ const UserProfile = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     // TODO: Implement profile update API call
-    alert('Profile update functionality to be implemented')
+    toast('Profile update functionality to be implemented')
     setIsEditing(false)
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="flex-1 bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 p-4 sm:p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
@@ -43,17 +44,17 @@ const UserProfile = () => {
         
         {/* Profile Info */}
         <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden border border-teal-100 dark:border-slate-800">
             
             {/* Header Banner */}
-            <div className="h-32 bg-gradient-to-r from-green-600 to-blue-600"></div>
+            <div className="h-32 bg-gradient-to-r from-teal-600 to-amber-500"></div>
 
             {/* Profile Content */}
             <div className="px-6 py-8">
               
               {/* Avatar & Name */}
               <div className="flex items-center mb-8">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-blue-600 flex items-center justify-center text-white text-3xl font-bold -mt-16 border-4 border-white dark:border-slate-800 shadow-lg">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-teal-400 to-amber-500 flex items-center justify-center text-white text-3xl font-bold -mt-16 border-4 border-white dark:border-slate-800 shadow-lg">
                   {user?.username?.charAt(0)?.toUpperCase()}
                 </div>
                 <div className="ml-6 flex-1">
@@ -75,7 +76,7 @@ const UserProfile = () => {
                       name="username"
                       value={formData.username}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
                     />
                   </div>
 
@@ -104,7 +105,7 @@ const UserProfile = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
                     />
                   </div>
 
@@ -118,7 +119,7 @@ const UserProfile = () => {
                       name="cource"
                       value={formData.cource}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
                     />
                   </div>
 
@@ -126,7 +127,7 @@ const UserProfile = () => {
                   <div className="flex gap-4 pt-4">
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all"
+                      className="flex-1 px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-all"
                     >
                       ✓ Save Changes
                     </button>
@@ -160,7 +161,7 @@ const UserProfile = () => {
                   {/* Edit Button */}
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="w-full mt-6 px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all"
+                    className="w-full mt-6 px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-all"
                   >
                     ✏️ Edit Profile
                   </button>

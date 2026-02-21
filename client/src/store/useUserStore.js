@@ -5,8 +5,20 @@ import { toast } from "react-toastify"
 export const useUserStore = create((set) => ({
     posts: [],
     subjects: [],
+    pendingReviews: [],
+    approvedReviews: [],
     loading: false,
     subjectLoading: false,
+    allUserReviewLoading: false,
+    reviewLoading: false,
+    reviewHistoryLoading: false,
+    allUserReviews: [],
+    allUserReviewsPagination: {
+        currentPage: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0
+    },
     pagination: {
         currentPage: 1,
         limit: 10,
@@ -14,13 +26,27 @@ export const useUserStore = create((set) => ({
         totalPages: 0
     },
 
-    getPostData: async (cource, subject = "", questionType = "", page = 1, limit = 10) => {
+    getPostData: async ({
+        subject = "all",
+        questionType = "all",
+        companyType = "all",
+        company = "all",
+        location = "all",
+        page = 1,
+        limit = 10
+    } = {}) => {
         set({ loading: true })
         try {
             const subjectParam = subject || "all"
             const questionTypeParam = questionType || "all"
-            const res = await axiosInstance.get(`/user/getpostdata/${cource}/${subjectParam}/${questionTypeParam}`, {
-                params: { page, limit }
+            const res = await axiosInstance.get(`/user/getpostdata/${subjectParam}/${questionTypeParam}`, {
+                params: {
+                    page,
+                    limit,
+                    companyType: companyType || "all",
+                    company: company || "all",
+                    location: location || "all"
+                }
             })
             set({
                 posts: res.data.posts,
@@ -38,14 +64,10 @@ export const useUserStore = create((set) => ({
         }
     },
 
-    getSubjectsByCourse: async (cource) => {
-        if (!cource) {
-            set({ subjects: [] })
-            return
-        }
+    getSubjectsByCourse: async () => {
         set({ subjectLoading: true })
         try {
-            const res = await axiosInstance.get(`/user/getSubjectName/${cource}`)
+            const res = await axiosInstance.get(`/user/getSubjectName`)
             set({ subjects: res.data.subjects || [] })
         } catch (error) {
             set({ subjects: [] })
@@ -55,9 +77,81 @@ export const useUserStore = create((set) => ({
         }
     },
 
+    addReview: async (payload) => {
+        set({ reviewLoading: true })
+        try {
+            const res = await axiosInstance.post("/user/add-review", payload)
+            toast.success(res.data.message || "Review submitted successfully")
+            return res.data.reviews || []
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+            return []
+        } finally {
+            set({ reviewLoading: false })
+        }
+    },
+
+    getReview: async () => {
+        set({ reviewHistoryLoading: true })
+        try {
+            const res = await axiosInstance.get("/user/get-review")
+            set({
+                pendingReviews: res.data.pendingReviews || [],
+                approvedReviews: res.data.approvedReviews || []
+            })
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        } finally {
+            set({ reviewHistoryLoading: false })
+        }
+    },
+
+    getAllUserReviews: async ({
+        subject = "all",
+        questionType = "all",
+        companyType = "all",
+        company = "all",
+        location = "all",
+        page = 1,
+        limit = 10
+    }) => {
+        set({ allUserReviewLoading: true })
+        try {
+            const res = await axiosInstance.get("/user/get-all-user-reviews", {
+                params: {
+                    subject: subject || "all",
+                    questionType: questionType || "all",
+                    companyType: companyType || "all",
+                    company: company || "all",
+                    location: location || "all",
+                    page,
+                    limit
+                }
+            })
+
+            set({
+                allUserReviews: res.data.reviews || [],
+                allUserReviewsPagination: {
+                    currentPage: res.data.page || 1,
+                    limit: res.data.limit || limit,
+                    total: res.data.total || 0,
+                    totalPages: res.data.totalPages || 0
+                }
+            })
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        } finally {
+            set({ allUserReviewLoading: false })
+        }
+    },
+
     clearPosts: () => set({
         posts: [],
         subjects: [],
-        pagination: { currentPage: 1, limit: 10, total: 0, totalPages: 0 }
+        pendingReviews: [],
+        approvedReviews: [],
+        allUserReviews: [],
+        pagination: { currentPage: 1, limit: 10, total: 0, totalPages: 0 },
+        allUserReviewsPagination: { currentPage: 1, limit: 10, total: 0, totalPages: 0 }
     })
 }))

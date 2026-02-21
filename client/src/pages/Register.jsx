@@ -3,7 +3,6 @@ import { useAuthStore } from '../store/useAuthStore'
 import { useNavigate, Link } from 'react-router-dom'
 
 const Register = () => {
-
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -22,10 +21,7 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const selectRole = (role) => {
@@ -41,7 +37,6 @@ const Register = () => {
     e.preventDefault()
 
     const submitData = { ...formData }
-
     if (formData.role === 'admin') {
       delete submitData.password
       delete submitData.passoutYear
@@ -51,29 +46,23 @@ const Register = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-teal-100 via-cyan-100 to-blue-200 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900 flex items-center justify-center p-4 transition-colors duration-300 overflow-hidden py-10">
-
-      {/* Animated Blobs */}
-      <div className="absolute top-20 left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
-
-      {/* Card */}
-      <div className="relative z-10 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl dark:shadow-2xl p-8 md:p-12 w-full max-w-md">
-
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4 py-10">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8 md:p-10 shadow-lg">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2 text-center">
           Create Account
         </h2>
+        <p className="text-center text-slate-600 dark:text-slate-400 mb-6">
+          Join <span className="text-amber-500 font-semibold">Project-IC</span>
+        </p>
 
-        {/* Role Buttons */}
         <div className="flex gap-3 mb-6">
-
           <button
             type="button"
             onClick={() => selectRole('user')}
             className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 ${
               formData.role === 'user'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                ? 'bg-teal-500 text-white shadow-sm'
+                : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
             }`}
           >
             User
@@ -84,18 +73,15 @@ const Register = () => {
             onClick={() => selectRole('admin')}
             className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 ${
               formData.role === 'admin'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                ? 'bg-teal-500 text-white shadow-sm'
+                : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
             }`}
           >
             Admin
           </button>
-
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-
-          {/* Username */}
           <input
             type="text"
             name="username"
@@ -103,10 +89,9 @@ const Register = () => {
             value={formData.username}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
           />
 
-          {/* Email */}
           <input
             type="email"
             name="email"
@@ -114,10 +99,9 @@ const Register = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
           />
 
-          {/* Phone */}
           <input
             type="tel"
             name="phone"
@@ -125,16 +109,15 @@ const Register = () => {
             value={formData.phone}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
           />
 
-          {/* Course */}
           <select
             name="cource"
             value={formData.cource}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
           >
             <option value="">Select Course</option>
             {courses.map(c => (
@@ -142,7 +125,6 @@ const Register = () => {
             ))}
           </select>
 
-          {/* Password (User only) */}
           {formData.role === 'user' && (
             <input
               type="password"
@@ -151,11 +133,10 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
             />
           )}
 
-          {/* Passout Year (User only) */}
           {formData.role === 'user' && (
             <input
               type="date"
@@ -163,28 +144,25 @@ const Register = () => {
               value={formData.passoutYear}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
             />
           )}
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 disabled:opacity-50"
+            className="w-full py-3 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition-colors duration-300 disabled:opacity-50"
           >
             {loading ? 'Registering...' : `Register as ${formData.role}`}
           </button>
-
         </form>
 
-        <p className="text-center text-gray-700 dark:text-gray-300 mt-6">
+        <p className="text-center text-slate-700 dark:text-slate-300 mt-6">
           Already have account?
-          <Link to="/login" className="text-blue-600 dark:text-blue-400 ml-2 font-semibold">
+          <Link to="/login" className="text-amber-500 hover:text-amber-600 ml-2 font-semibold">
             Login here
           </Link>
         </p>
-
       </div>
     </div>
   )

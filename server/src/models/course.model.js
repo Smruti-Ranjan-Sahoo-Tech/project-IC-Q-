@@ -1,5 +1,18 @@
 const mongoose = require('mongoose')
 
+const subjectSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approve'],
+        default: 'pending'
+    }
+}, { _id: true })
+
 const courseSchema = new mongoose.Schema({
     course: {
         type: String,
@@ -8,6 +21,10 @@ const courseSchema = new mongoose.Schema({
         trim: true
     },
     subjects: {
+        type: [subjectSchema],
+        default: []
+    },
+    company: {
         type: [String],
         default: []
     }

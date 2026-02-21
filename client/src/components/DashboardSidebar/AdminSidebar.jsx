@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Users,
   PlusCircle,
+  List,
   User,
   BookOpen,
   LogOut
@@ -36,6 +37,11 @@ const AdminSidebar = () => {
       path: "/admin/add-question",
     },
     {
+      label: "All Questions",
+      icon: List,
+      path: "/admin/all-questions",
+    },
+    {
       label: "Profile",
       icon: User,
       path: "/admin/profile",
@@ -45,18 +51,16 @@ const AdminSidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="w-16 md:w-64 h-full overflow-hidden bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
+    <aside className="w-16 md:w-64 h-full overflow-hidden bg-gradient-to-b from-teal-950 via-slate-900 to-slate-900 border-r border-teal-900/40 flex flex-col justify-between">
 
-      {/* Logo */}
       <div>
-        <div className="h-16 flex items-center justify-center md:justify-start px-2 md:px-6 border-b border-slate-800">
+        <div className="h-16 flex items-center justify-center md:justify-start px-2 md:px-6 border-b border-teal-900/40">
           <h1 className="text-xl font-semibold text-white tracking-wide">
-            <span className="md:hidden">A</span>
-            <span className="hidden md:inline">Admin Panel</span>
+            <span className="md:hidden text-amber-400">A</span>
+            <span className="hidden md:inline">Admin <span className="text-amber-400">Panel</span></span>
           </h1>
         </div>
 
-        {/* Menu */}
         <nav className="p-2 md:p-4 space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -68,13 +72,13 @@ const AdminSidebar = () => {
                 to={item.path}
                 className={`flex items-center justify-center md:justify-start gap-0 md:gap-3 px-0 md:px-4 py-3 rounded-lg transition-all duration-200 group
                 ${active
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    ? "bg-teal-500 text-white shadow-md"
+                    : "text-slate-300 hover:bg-teal-900/40 hover:text-white"
                   }`}
               >
                 <Icon
                   size={20}
-                  className={`${active ? "text-white" : "text-slate-400 group-hover:text-white"
+                  className={`${active ? "text-white" : "text-slate-300 group-hover:text-white"
                     }`}
                 />
 
@@ -85,11 +89,10 @@ const AdminSidebar = () => {
         </nav>
       </div>
 
-      {/* Logout */}
-      <div className="p-2 md:p-4 border-t border-slate-800">
+      <div className="p-2 md:p-4 border-t border-teal-900/40">
         <button
           onClick={logout}
-          className="flex items-center justify-center md:justify-start gap-0 md:gap-3 w-full px-0 md:px-4 py-3 text-slate-400 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200"
+          className="flex items-center justify-center md:justify-start gap-0 md:gap-3 w-full px-0 md:px-4 py-3 text-slate-300 hover:text-white hover:bg-rose-600 rounded-lg transition-all duration-200"
         >
           <LogOut size={20} />
           <span className="hidden md:inline">Logout</span>
@@ -100,4 +103,3 @@ const AdminSidebar = () => {
 };
 
 export default AdminSidebar;
-

@@ -59,8 +59,8 @@ const Services = () => {
     <div className="w-full">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-teal-700 to-slate-900"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
 
         <div className="relative z-10 text-center text-white">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">Our Services</h1>
@@ -74,14 +74,14 @@ const Services = () => {
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl border-2 border-gray-200 dark:border-gray-800 hover:border-blue-600 dark:hover:border-blue-400 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+            <div key={idx} className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl border-2 border-gray-200 dark:border-gray-800 hover:border-teal-600 dark:hover:border-teal-400 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
               <div className="text-5xl mb-4">{service.icon}</div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{service.title}</h3>
               <p className="text-gray-700 dark:text-gray-300 mb-6">{service.description}</p>
               <ul className="space-y-2">
                 {service.features.map((feature, i) => (
                   <li key={i} className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                    <span className="text-blue-600 dark:text-blue-400">✓</span> {feature}
+                    <span className="text-teal-600 dark:text-teal-400">✓</span> {feature}
                   </li>
                 ))}
               </ul>
@@ -113,7 +113,7 @@ const Services = () => {
           {pricing.map((plan, idx) => (
             <div key={idx} className={`rounded-xl shadow-lg dark:shadow-2xl p-8 relative transition-all duration-300 ${
               plan.badge 
-                ? 'bg-blue-600 text-white border-4 border-blue-600 transform scale-105' 
+                ? 'bg-teal-600 text-white border-4 border-teal-600 transform scale-105' 
                 : 'bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white'
             }`}>
               
@@ -136,8 +136,8 @@ const Services = () => {
 
               <button className={`w-full py-3 font-semibold rounded-lg transition-all duration-300 ${
                 plan.badge
-                  ? 'bg-white text-blue-600 hover:bg-gray-100'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-white text-teal-600 hover:bg-gray-100'
+                  : 'bg-teal-600 text-white hover:bg-teal-700'
               }`}>
                 {isLoggedIn ? 'Upgrade Now' : 'Get Started'}
               </button>
@@ -148,8 +148,8 @@ const Services = () => {
 
       {/* CTA Section */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-        <div className="absolute bottom-0 left-20 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-slate-900 to-amber-500"></div>
+        <div className="absolute bottom-0 left-20 w-80 h-80 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
 
         <div className="relative z-10 text-center text-white">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Get Started?</h2>
@@ -158,7 +158,7 @@ const Services = () => {
           {!isLoggedIn && (
             <Link 
               to="/register" 
-              className="inline-block px-10 py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
+              className="inline-block px-10 py-4 bg-white text-teal-600 font-bold text-lg rounded-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
             >
               Start Your Journey Today
             </Link>
@@ -170,3 +170,4 @@ const Services = () => {
 }
 
 export default Services
+

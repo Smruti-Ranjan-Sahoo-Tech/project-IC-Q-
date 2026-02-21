@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useUserStore } from "../../store/useUserStore";
+import { useCourseStore } from "../../store/useCourseStore";
+
+const getSubjectName = (subject) => {
+  if (typeof subject === "string") return subject;
+  return subject?.name || "";
+};
 
 const UserMain = () => {
   const {
@@ -12,37 +18,61 @@ const UserMain = () => {
     getSubjectsByCourse,
     clearPosts
   } = useUserStore();
+  const { companies, companiesLoading, locations, locationsLoading, fetchCompanies, fetchCompanyLocations } = useCourseStore();
 
-  const [course, setCourse] = useState("");
   const [subject, setSubject] = useState("");
   const [questionType, setQuestionType] = useState("");
+  const [companyType, setCompanyType] = useState("all");
+  const [company, setCompany] = useState("all");
+  const [location, setLocation] = useState("all");
   const [openQuestionId, setOpenQuestionId] = useState(null);
 
-  const courses = ["MERN", "PYTHON", "JAVA", "TESTING"];
   const questionTypes = ["Interview", "Coding", "Subjective"];
 
   useEffect(() => {
-    if (course) {
-      getSubjectsByCourse(course);
-      setSubject("");
-    } else {
-      setSubject("");
-      clearPosts();
-    }
-  }, [course]);
+    getSubjectsByCourse();
+    clearPosts();
+    setSubject("");
+  }, [getSubjectsByCourse, clearPosts]);
+
+  useEffect(() => {
+    fetchCompanies(companyType === "all" ? "" : companyType);
+    setCompany("all");
+    setLocation("all");
+  }, [companyType, fetchCompanies]);
+
+  useEffect(() => {
+    fetchCompanyLocations(company, companyType);
+    setLocation("all");
+  }, [company, companyType, fetchCompanyLocations]);
 
   const handleFetch = async () => {
-    if (!course) return;
-    await getPostData(course, subject, questionType, 1, 10);
+    await getPostData({
+      subject: subject || "all",
+      questionType: questionType || "all",
+      companyType,
+      company,
+      location,
+      page: 1,
+      limit: 10
+    });
   };
 
   const handlePageChange = (page) => {
-    if (page < 1 || page > pagination.totalPages || !course) return;
-    getPostData(course, subject, questionType, page, 10);
+    if (page < 1 || page > pagination.totalPages) return;
+    getPostData({
+      subject: subject || "all",
+      questionType: questionType || "all",
+      companyType,
+      company,
+      location,
+      page,
+      limit: 10
+    });
   };
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="flex-1 bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 p-4 sm:p-6">
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           Learning Dashboard
@@ -56,36 +86,26 @@ const UserMain = () => {
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col min-w-[200px]">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              Course
-            </label>
-            <select
-              value={course}
-              onChange={(e) => setCourse(e.target.value)}
-              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Course</option>
-              {courses.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col min-w-[200px]">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
               Subject
             </label>
             <select
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              disabled={!course || subjectLoading}
-              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+              disabled={subjectLoading}
+              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300 disabled:opacity-50"
             >
               <option value="">
                 {subjectLoading ? "Loading..." : "All Subjects"}
               </option>
-              {subjects.map((subj) => (
-                <option key={subj} value={subj}>{subj}</option>
-              ))}
+              {subjects.map((subj, index) => {
+                const subjectName = getSubjectName(subj);
+                if (!subjectName) return null;
+                return (
+                  <option key={`${subjectName}-${index}`} value={subjectName}>
+                    {subjectName}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
@@ -96,7 +116,7 @@ const UserMain = () => {
             <select
               value={questionType}
               onChange={(e) => setQuestionType(e.target.value)}
-              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
             >
               <option value="">All Types</option>
               {questionTypes.map((type) => (
@@ -105,10 +125,58 @@ const UserMain = () => {
             </select>
           </div>
 
+          <div className="flex flex-col min-w-[200px]">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              Company Type
+            </label>
+            <select
+              value={companyType}
+              onChange={(e) => setCompanyType(e.target.value)}
+              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
+            >
+              <option value="all">All Company Types</option>
+              <option value="MNC">MNC</option>
+              <option value="Startup">Startup</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col min-w-[200px]">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              Company
+            </label>
+            <select
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
+            >
+              <option value="all">{companiesLoading ? "Loading..." : "All Companies"}</option>
+              {companies.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col min-w-[200px]">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              Location
+            </label>
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              disabled={company === "all" || locationsLoading}
+              className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300 disabled:opacity-50"
+            >
+              <option value="all">{locationsLoading ? "Loading..." : "All Locations"}</option>
+              {locations.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+          </div>
+
           <button
             onClick={handleFetch}
-            disabled={!course}
-            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-400 disabled:to-slate-400 text-white font-semibold rounded-lg transition-all"
+            className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-all"
           >
             Search
           </button>
@@ -148,11 +216,14 @@ const UserMain = () => {
                           </h3>
                           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                             Added by: <span className="font-medium text-slate-700 dark:text-slate-300">{post?.writtenBy?.username || "Admin"}</span>
+                            <span className="ml-2 inline-flex items-center rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+                              {post?.writtenBy?.role || "admin"}
+                            </span>
                           </p>
                           <div className="mt-3 flex flex-wrap gap-2">
                             <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                               post.questionType === "Interview"
-                                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+                                ? "bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-200"
                                 : post.questionType === "Coding"
                                 ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
                                 : "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200"
@@ -167,7 +238,7 @@ const UserMain = () => {
                             </span>
                           </div>
                         </div>
-                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-300 whitespace-nowrap">
+                        <span className="text-sm font-semibold text-teal-600 dark:text-teal-300 whitespace-nowrap">
                           {isOpen ? "Hide Answer" : "View Answer"}
                         </span>
                       </div>
@@ -205,13 +276,9 @@ const UserMain = () => {
               </button>
             </div>
           </>
-        ) : course ? (
-          <div className="p-8 text-center text-slate-500">
-            <p>No questions found for selected filters.</p>
-          </div>
         ) : (
           <div className="p-8 text-center text-slate-500">
-            <p>Select a course and filters to view questions.</p>
+            <p>No questions found for selected filters.</p>
           </div>
         )}
       </div>

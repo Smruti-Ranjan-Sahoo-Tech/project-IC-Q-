@@ -27,9 +27,9 @@ const ContactUs = () => {
     <div className="w-full">
       {/* Hero */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-teal-700 to-slate-900"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-amber-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
 
         <div className="relative z-10 text-center text-white">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">Contact Us</h1>
@@ -73,7 +73,7 @@ const ContactUs = () => {
                     <a
                       key={idx}
                       href="#"
-                      className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                      className="w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full flex items-center justify-center font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                     >
                       {social.icon}
                     </a>
@@ -97,7 +97,7 @@ const ContactUs = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900 transition-all duration-300"
                   />
                 </div>
 
@@ -109,7 +109,7 @@ const ContactUs = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900 transition-all duration-300"
                   />
                 </div>
 
@@ -121,7 +121,7 @@ const ContactUs = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="How can we help?"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900 transition-all duration-300"
                   />
                 </div>
 
@@ -133,13 +133,13 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="Your message..."
                     rows="5"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900 transition-all duration-300 resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0"
+                  className="w-full py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0"
                 >
                   ✉️ Send Message
                 </button>
@@ -160,7 +160,7 @@ const ContactUs = () => {
             { q: 'How often is content updated?', a: 'We add new questions regularly based on industry trends.' },
             { q: 'Can I download resources?', a: 'Yes, premium members can download solutions.' },
           ].map((faq, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-4 border-blue-600 dark:border-blue-400">
+            <div key={idx} className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-4 border-teal-600 dark:border-teal-400">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">❓ {faq.q}</h3>
               <p className="text-gray-700 dark:text-gray-300">{faq.a}</p>
             </div>
@@ -172,3 +172,4 @@ const ContactUs = () => {
 }
 
 export default ContactUs
+

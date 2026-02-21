@@ -15,93 +15,149 @@ console.log("Email Service Loaded");
 // Professional Premium Email Template
 const emailTemplate = (title, content) => `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
 </head>
 
-<body style="margin:0;padding:0;background-color:#f2f4f6;font-family:Arial,Helvetica,sans-serif;">
+<body style="
+  margin:0;
+  padding:0;
+  background:#f4f7fb;
+  font-family:'Segoe UI',Roboto,Arial,sans-serif;
+">
 
-  <table width="100%" bgcolor="#f2f4f6" cellpadding="0" cellspacing="0">
-    <tr>
-      <td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:20px;">
+<tr>
+<td align="center">
 
-        <!-- Main Container -->
-        <table width="600" cellpadding="0" cellspacing="0" bgcolor="#ffffff"
-          style="
-            margin:30px auto;
-            border-radius:12px;
-            overflow:hidden;
-            box-shadow:0 4px 15px rgba(0,0,0,0.1);
-          ">
+<!-- Container -->
+<table width="100%" cellpadding="0" cellspacing="0"
+style="
+  max-width:600px;
+  background:#ffffff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+">
 
-          <!-- Header -->
-          <tr>
-            <td align="center"
-              style="
-                background:linear-gradient(90deg,#4f46e5,#6366f1);
-                color:#ffffff;
-                padding:20px;
-                font-size:22px;
-                font-weight:bold;
-              ">
-              ${title}
-            </td>
-          </tr>
+<!-- Header -->
+<tr>
+<td style="
+  background:linear-gradient(135deg,#6366f1,#4f46e5,#7c3aed);
+  padding:30px 20px;
+  text-align:center;
+  color:white;
+">
 
-          <!-- Content -->
-          <tr>
-            <td style="
-              padding:30px;
-              color:#333333;
-              font-size:15px;
-              line-height:1.7;
-            ">
-              ${content}
-            </td>
-          </tr>
+<div style="font-size:24px;font-weight:700;letter-spacing:0.5px;">
+Project-IC
+</div>
 
-          <!-- Button -->
-          <tr>
-            <td align="center" style="padding-bottom:30px;">
-              <a href="#"
-                style="
-                  background:#4f46e5;
-                  color:#ffffff;
-                  padding:12px 24px;
-                  text-decoration:none;
-                  border-radius:6px;
-                  font-weight:bold;
-                  display:inline-block;
-                ">
-                Open Project-IC
-              </a>
-            </td>
-          </tr>
+<div style="
+  font-size:14px;
+  opacity:0.9;
+  margin-top:5px;
+">
+Professional Interview Preparation Platform
+</div>
 
-          <!-- Footer -->
-          <tr>
-            <td align="center"
-              style="
-                background:#f9fafb;
-                padding:20px;
-                font-size:12px;
-                color:#888888;
-              ">
+</td>
+</tr>
 
-              (c) ${new Date().getFullYear()} Project-IC. All rights reserved.
-              <br><br>
-              This is an automated email. Please do not reply.
+<!-- Title -->
+<tr>
+<td style="
+  padding:30px 30px 10px 30px;
+  font-size:22px;
+  font-weight:600;
+  color:#111827;
+  text-align:center;
+">
+${title}
+</td>
+</tr>
 
-            </td>
-          </tr>
+<!-- Divider -->
+<tr>
+<td style="padding:0 30px;">
+<div style="
+  height:1px;
+  background:#e5e7eb;
+"></div>
+</td>
+</tr>
 
-        </table>
+<!-- Content -->
+<tr>
+<td style="
+  padding:25px 30px;
+  color:#374151;
+  font-size:15px;
+  line-height:1.7;
+">
+${content}
+</td>
+</tr>
 
-      </td>
-    </tr>
-  </table>
+<!-- Button -->
+<tr>
+<td align="center" style="padding:10px 30px 30px 30px;">
+
+<a href="https://your-domain.com"
+style="
+  display:inline-block;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  color:white;
+  text-decoration:none;
+  padding:14px 28px;
+  border-radius:8px;
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 4px 14px rgba(79,70,229,0.4);
+">
+Open Project-IC
+</a>
+
+</td>
+</tr>
+
+<!-- Footer -->
+<tr>
+<td style="
+  background:#f9fafb;
+  padding:25px;
+  text-align:center;
+">
+
+<div style="
+  font-size:13px;
+  color:#6b7280;
+  margin-bottom:10px;
+">
+© ${new Date().getFullYear()} Project-IC. All rights reserved.
+</div>
+
+<div style="
+  font-size:12px;
+  color:#9ca3af;
+">
+This is an automated email. Please do not reply.
+</div>
+
+</td>
+</tr>
+
+</table>
+
+<!-- Bottom spacing -->
+<div style="height:20px;"></div>
+
+</td>
+</tr>
+</table>
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const UpdateProfile = () => {
   const navigate = useNavigate()
@@ -39,7 +40,7 @@ const UpdateProfile = () => {
     e.preventDefault()
     
     if (!formData.username || !formData.phone || !formData.cource) {
-      alert('Please fill all required fields')
+      toast.error('Please fill all required fields')
       return
     }
 
@@ -51,7 +52,7 @@ const UpdateProfile = () => {
         navigate('/profile')
       }, 2000)
     } catch (error) {
-      alert('Failed to update profile')
+      toast.error('Failed to update profile')
     }
   }
 

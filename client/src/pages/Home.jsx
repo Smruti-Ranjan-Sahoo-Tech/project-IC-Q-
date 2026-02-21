@@ -1,167 +1,214 @@
-import { Link } from 'react-router-dom'
-import { useAuthStore } from '../store/useAuthStore'
+import React from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { GoArrowUpRight } from "react-icons/go";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Home = () => {
-  const { isLoggedIn, role } = useAuthStore()
+  const { isLoggedIn, role } = useAuthStore();
+  const navigate = useNavigate();
+
+  const dashboardDirect = () => {
+    if (isLoggedIn) {
+      navigate(role === "admin" ? "/admin" : "/user");
+      return;
+    }
+    navigate("/login");
+  };
+
+  const features = [
+    { label: "Students Trained", value: "1K+" },
+    { label: "Placement Questions", value: "5K+" },
+    { label: "Company Patterns", value: "20+" },
+    { label: "Success Rate", value: "92%" }
+  ];
+
+  const companies = [
+    {
+      name: "Google",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+    },
+    {
+      name: "Amazon",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+    },
+    {
+      name: "Microsoft",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+    },
+    {
+      name: "Infosys",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg"
+    },
+    {
+      name: "Wipro",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg"
+    },
+    {
+      name: "Accenture",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg"
+    },
+    {
+      name: "Deloitte",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Deloitte_Logo.svg"
+    }
+  ];
 
   return (
-    <div className="w-full">
-      {/* Hero Section with Animated Background */}
-      <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 animate-gradient-shift bg-400%"></div>
-        
-        {/* Animated Blobs */}
-        <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
-        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-2"></div>
+    <main className="bg-white dark:bg-slate-950">
+      <section className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100">
+        <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="home-text-reveal text-5xl md:text-6xl font-extrabold leading-tight">
+              Learn <span className="text-amber-500">Smart</span>, Achieve{" "}
+              <span className="text-amber-500">Fast</span>
+            </h1>
 
-        {/* Content */}
-        <div className="relative z-10 text-center text-white">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Welcome to Learning Hub
-          </h1>
-          <p className="text-xl md:text-2xl mb-10 opacity-95 max-w-2xl mx-auto">
-            Master programming with curated questions from industry experts
-          </p>
+            <p className="home-text-reveal home-delay-1 mt-4 text-lg text-gray-700 dark:text-slate-300">
+              Crack top company placements with confidence.
+            </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            {isLoggedIn ? (
-              <Link 
-                to={role === 'admin' ? '/admin' : '/user'} 
-                className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300 active:translate-y-0"
+            <p className="home-text-reveal home-delay-2 mt-2 text-gray-600 dark:text-slate-400">
+              Prepare aptitude, coding, and interviews with focused practice
+              questions and clear answers.
+            </p>
+
+            <div className="home-text-reveal home-delay-3 mt-6 flex gap-4 flex-wrap">
+              <button
+                onClick={dashboardDirect}
+                className="bg-teal-500 flex gap-1 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 transition"
               >
-                Go to Dashboard
+                Get Started
+                <span className="mt-1">
+                  <GoArrowUpRight />
+                </span>
+              </button>
+
+              <Link
+                to={isLoggedIn ? "/user" : "/register"}
+                className="border border-teal-700 text-teal-600 dark:text-teal-300 px-6 py-3 rounded-lg font-semibold hover:bg-teal-500 hover:text-white transition"
+              >
+                Explore Questions
               </Link>
-            ) : (
-              <>
-                <Link 
-                  to="/register" 
-                  className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300 active:translate-y-0"
-                >
-                  Get Started
-                </Link>
-                <Link 
-                  to="/login" 
-                  className="px-8 py-4 bg-transparent text-white border-2 border-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300"
-                >
-                  Sign In
-                </Link>
-              </>
-            )}
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20">
-              <h3 className="text-4xl md:text-5xl font-bold mb-2">1000+</h3>
-              <p className="text-lg opacity-90">Questions</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20">
-              <h3 className="text-4xl md:text-5xl font-bold mb-2">500+</h3>
-              <p className="text-lg opacity-90">Users</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20">
-              <h3 className="text-4xl md:text-5xl font-bold mb-2">10+</h3>
-              <p className="text-lg opacity-90">Courses</p>
+          <div className="home-box-pop home-delay-2 bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 space-y-6 border border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="home-box-pop home-delay-3 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+                <h3 className="font-semibold text-lg text-amber-500">
+                  Aptitude
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                  Quant, Logical, Verbal
+                </p>
+              </div>
+
+              <div className="home-box-pop home-delay-4 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+                <h3 className="font-semibold text-lg text-amber-500">Coding</h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                  DSA and company problems
+                </p>
+              </div>
+
+              <div className="home-box-pop home-delay-5 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+                <h3 className="font-semibold text-lg text-amber-500">
+                  Interviews
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
+                  HR and technical rounds
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 md:py-32 px-4 md:px-8 bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white">
-          Why Choose Learning Hub?
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {[
-            { icon: '📚', title: 'Comprehensive Content', desc: 'Access thousands of carefully curated questions covering all major programming topics.' },
-            { icon: '🎯', title: 'Targeted Learning', desc: 'Filter questions by course and difficulty level to focus on what you need.' },
-            { icon: '💡', title: 'Expert Solutions', desc: 'Every question includes detailed answers written by experienced developers.' },
-            { icon: '🚀', title: 'Progress Tracking', desc: 'Monitor your learning journey and track progress across different courses.' },
-            { icon: '👥', title: 'Community Support', desc: 'Join thousands of learners and grow together through shared knowledge.' },
-            { icon: '⚡', title: 'Fast & Reliable', desc: 'Lightning-fast platform built for optimal performance and seamless experience.' },
-          ].map((feature, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg dark:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-              <div className="text-5xl mb-4">{feature.icon}</div>
-              <h3 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">
-                {feature.title}
-              </h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                {feature.desc}
+      <section className="bg-white dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {features.map((item) => (
+            <div key={item.label} className="home-box-pop">
+              <p className="text-3xl font-bold text-amber-500">{item.value}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400">
+                {item.label}
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Courses Section with Gradient Background (light theme) */}
-      <section className="py-20 md:py-32 px-4 md:px-8 relative overflow-hidden bg-gray-50 transition-colors duration-300">
-        <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-40"></div>
-        <div className="absolute top-20 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-        
-        <div className="relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900">
-            Popular Courses
+      <section className="bg-gray-50 dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+            Why Choose Us?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {['Express.js', 'React', 'Node.js', 'MongoDB', 'JavaScript', 'Web Development'].map(course => (
-              <div 
-                key={course} 
-                className="bg-white p-8 rounded-xl border border-gray-200 hover:border-blue-400 shadow-sm hover:shadow-lg transition-all duration-300 text-center text-slate-900"
+
+          <div className="mt-10 grid md:grid-cols-3 gap-8">
+            {[
+              "Company-Specific Preparation",
+              "Updated Placement Questions",
+              "Expert-Designed Learning Path"
+            ].map((title) => (
+              <div
+                key={title}
+                className="home-box-pop bg-white dark:bg-slate-950 p-6 rounded-xl shadow-md border border-slate-200 dark:border-slate-800"
               >
-                <div className="text-5xl mb-4">📖</div>
-                <h3 className="text-2xl font-semibold mb-2">{course}</h3>
-                <p className="text-slate-700 mb-6">Master the fundamentals and advanced concepts</p>
-                {isLoggedIn ? (
-                  <Link 
-                    to="/user" 
-                    className="inline-block px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all duration-300"
-                  >
-                    Learn Now
-                  </Link>
-                ) : (
-                  <Link 
-                    to="/register" 
-                    className="inline-block px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all duration-300"
-                  >
-                    Explore
-                  </Link>
-                )}
+                <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
+                  Learn with real interview patterns and structured preparation.
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section with Animated Background */}
-      <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-gradient-shift bg-400%"></div>
-        
-        <div className="absolute top-0 right-20 w-80 h-80 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-0 left-20 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
-
-        <div className="relative z-10 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Accelerate Your Learning?
+      <section className="bg-white dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
+            Companies You Will Be Ready For
           </h2>
-          <p className="text-xl md:text-2xl mb-10 opacity-95 max-w-2xl mx-auto">
-            Join thousands of developers already learning on Learning Hub
-          </p>
-          {!isLoggedIn && (
-            <Link 
-              to="/register" 
-              className="inline-block px-10 py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300"
-            >
-              Start Learning Today
-            </Link>
-          )}
+
+          <div className="mt-10 logo-marquee-mask group overflow-hidden">
+            <div className="logo-marquee-track flex gap-8 whitespace-nowrap group-hover:[animation-play-state:paused]">
+              {[...companies, ...companies].map((company, idx) => (
+                <div
+                  key={`${company.name}-${idx}`}
+                  className="logo-card-float flex items-center justify-center min-w-[180px] h-20 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-transform duration-300 hover:scale-105"
+                >
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="max-h-10 max-w-[140px] object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-    </div>
-  )
-}
 
-export default Home
+      <section className="bg-gray-900 text-white py-16 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-bold">
+            Start Your Developer Journey Today
+          </h2>
+          <p className="mt-4 text-gray-300">
+            Explore curated learning resources and level up your skills with
+            confidence.
+          </p>
+          <button
+            onClick={dashboardDirect}
+            className="mt-6 bg-gray-900 border-white border-2 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 hover:text-amber-500 transition"
+          >
+            Start Learning
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+};
+
+export default Home;

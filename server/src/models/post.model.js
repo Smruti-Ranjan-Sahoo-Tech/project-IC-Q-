@@ -9,7 +9,8 @@ const postSchema = new mongoose.Schema(
     },
     answer: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
       trim: true,
     },
     questionType: {
@@ -24,6 +25,22 @@ const postSchema = new mongoose.Schema(
     subject:{
           type:String,
           required:true
+    },
+    company:{
+        type:String,
+        required:true,
+        default:"generic"
+    },
+    companyType:{
+        type:String,
+        required:true,
+        enum:["MNC","Startup","Other"],
+        default:"Other"
+    },
+    location:{
+        type:String,
+        required:true,
+        default:"N/A"
     },
     writtenBy: {
       type: mongoose.Schema.Types.ObjectId,
