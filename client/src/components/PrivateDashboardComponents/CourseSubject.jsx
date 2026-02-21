@@ -14,24 +14,17 @@ const getSubjectStatus = (subject) => {
 const CourseSubject = () => {
   const {
     subjects,
-    companies,
     loading,
-    companiesLoading,
     fetchSubjects,
     addSubject,
-    deleteSubject,
-    fetchCompanies,
-    addCompany,
-    deleteCompany
+    deleteSubject
   } = useCourseStore();
 
   const [newSubject, setNewSubject] = useState("");
-  const [newCompany, setNewCompany] = useState("");
 
   useEffect(() => {
     fetchSubjects();
-    fetchCompanies();
-  }, [fetchSubjects, fetchCompanies]);
+  }, [fetchSubjects]);
 
   const handleAddSubject = () => {
     if (!newSubject.trim()) return;
@@ -43,24 +36,14 @@ const CourseSubject = () => {
     deleteSubject(getSubjectName(subject));
   };
 
-  const handleAddCompany = () => {
-    if (!newCompany.trim()) return;
-    addCompany(newCompany.trim());
-    setNewCompany("");
-  };
-
-  const handleDeleteCompany = (company) => {
-    deleteCompany(company);
-  };
-
   return (
     <div className="flex-1 p-4 sm:p-6 bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 min-h-screen">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Course Settings</h1>
-        <p className="text-slate-600 dark:text-slate-400">Manage subjects and companies for your course</p>
+        <p className="text-slate-600 dark:text-slate-400">Manage subjects for your course</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+      <div className="mb-6">
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-teal-100 dark:border-slate-800">
           <h2 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">Add New Subject</h2>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -79,28 +62,9 @@ const CourseSubject = () => {
             </button>
           </div>
         </div>
-
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-teal-100 dark:border-slate-800">
-          <h2 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">Add Company Name</h2>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="text"
-              value={newCompany}
-              onChange={(e) => setNewCompany(e.target.value)}
-              placeholder="Enter company name"
-              className="flex-1 px-4 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-300"
-            />
-            <button
-              onClick={handleAddCompany}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-            >
-              Add
-            </button>
-          </div>
-        </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-1 gap-6">
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-teal-100 dark:border-slate-800">
           <div className="p-6 border-b dark:border-slate-700">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">All Subjects</h2>
@@ -145,37 +109,6 @@ const CourseSubject = () => {
                   </div>
                 );
               })}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-teal-100 dark:border-slate-800">
-          <div className="p-6 border-b dark:border-slate-700">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">All Companies</h2>
-          </div>
-
-          {companiesLoading && <p className="p-6 text-center text-slate-500">Loading companies...</p>}
-
-          {!companiesLoading && companies.length === 0 && (
-            <p className="p-6 text-center text-slate-500">No companies found</p>
-          )}
-
-          {!companiesLoading && companies.length > 0 && (
-            <div className="p-6 grid md:grid-cols-1 gap-3">
-              {companies.map((company, index) => (
-                <div
-                  key={`${company}-${index}`}
-                  className="flex justify-between items-center bg-slate-100 dark:bg-slate-900 p-4 rounded-lg hover:shadow-md transition"
-                >
-                  <span className="font-medium text-slate-800 dark:text-white">{company}</span>
-                  <button
-                    onClick={() => handleDeleteCompany(company)}
-                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
             </div>
           )}
         </div>
