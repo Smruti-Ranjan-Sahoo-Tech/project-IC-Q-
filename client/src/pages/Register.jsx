@@ -18,6 +18,8 @@ const Register = () => {
   const navigate = useNavigate()
 
   const courses = ['MERN', 'JAVA', 'PYTHON', 'TESTING']
+  const currentYear = new Date().getFullYear()
+  const passoutYears = Array.from({ length: 40 }, (_, i) => (currentYear + 5 - i).toString())
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -40,6 +42,8 @@ const Register = () => {
     if (formData.role === 'admin') {
       delete submitData.password
       delete submitData.passoutYear
+    } else if (formData.passoutYear) {
+      submitData.passoutYear = `${formData.passoutYear}-01-01`
     }
 
     await register(submitData, navigate)
@@ -82,70 +86,92 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
-          />
-
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
-          />
-
-          <select
-            name="cource"
-            value={formData.cource}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
-          >
-            <option value="">Select Course</option>
-            {courses.map(c => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-
-          {formData.role === 'user' && (
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Username</label>
             <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
+              type="text"
+              name="username"
+              placeholder="Enter username"
+              value={formData.username}
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
             />
-          )}
+          </div>
 
-          {formData.role === 'user' && (
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Email</label>
             <input
-              type="date"
-              name="passoutYear"
-              value={formData.passoutYear}
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Phone</label>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter phone number"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Course</label>
+            <select
+              name="cource"
+              value={formData.cource}
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
-            />
+            >
+              <option value="">Select Course</option>
+              {courses.map(c => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          {formData.role === 'user' && (
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
+              />
+            </div>
+          )}
+
+          {formData.role === 'user' && (
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Passout Year</label>
+              <select
+                name="passoutYear"
+                value={formData.passoutYear}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/40 transition-all duration-300"
+              >
+                <option value="">Select Passout Year</option>
+                {passoutYears.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
           )}
 
           <button
