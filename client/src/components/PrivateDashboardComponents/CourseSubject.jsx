@@ -11,6 +11,13 @@ const getSubjectStatus = (subject) => {
   return subject?.status || "pending";
 };
 
+const statusClassMap = {
+  approve: "bg-emerald-100 text-emerald-700",
+  pending: "bg-amber-100 text-amber-700",
+  rejected: "bg-rose-100 text-rose-700",
+  delete_pending: "bg-blue-100 text-blue-700"
+};
+
 const CourseSubject = () => {
   const {
     subjects,
@@ -91,9 +98,7 @@ const CourseSubject = () => {
                       <span className="font-medium text-slate-800 dark:text-white">{name}</span>
                       <span
                         className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                          status === "approve"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-amber-100 text-amber-700"
+                          statusClassMap[status] || "bg-slate-200 text-slate-700"
                         }`}
                       >
                         {status}
@@ -102,9 +107,14 @@ const CourseSubject = () => {
 
                     <button
                       onClick={() => handleDeleteSubject(subject)}
-                      className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition"
+                      disabled={status === "pending" || status === "delete_pending"}
+                      className={`px-3 py-1 text-white text-xs rounded-lg transition ${
+                        status === "pending" || status === "delete_pending"
+                          ? "bg-slate-400 cursor-not-allowed"
+                          : "bg-red-600 hover:bg-red-700"
+                      }`}
                     >
-                      Delete
+                      {status === "delete_pending" ? "Delete Requested" : "Delete"}
                     </button>
                   </div>
                 );

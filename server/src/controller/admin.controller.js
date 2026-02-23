@@ -318,7 +318,7 @@ class AdminController {
 
     static async addCourceSubject(req, res) {
         try {
-            const { cource, email, username } = req.user;
+            const { id, cource, email, username } = req.user;
             const { subject } = req.body;
             const normalizedCourse = (cource || "").toString().trim();
             const normalizedSubject = (subject || "").toString().trim();
@@ -367,6 +367,62 @@ class AdminController {
                         });
                     }
 
+                    if (existingSubject.status === "delete_pending") {
+                        return res.status(409).json({
+                            success: false,
+                            message: "Subject delete request is pending superadmin approval"
+                        });
+                    }
+
+                    if (existingSubject.status === "rejected") {
+                        existingSubject.status = "pending";
+                        existingSubject.requesterAdminId = id;
+                        existingSubject.requesterAdminName = username || "";
+                        existingSubject.requesterAdminEmail = email || "";
+                        await courseData.save();
+
+                        const superAdminEmail = process.env.S_ADMIN_EMAIL;
+                        const adminRequestMessage = `
+                        <h2>New Course Subject Request</h2>
+                        <p>An admin has requested to add a new subject to a course.</p>
+                        <ul>
+                            <li><strong>Admin Name:</strong> ${username}</li>
+                            <li><strong>Admin Email:</strong> ${email}</li>
+                            <li><strong>Course:</strong> ${cource}</li>
+                            <li><strong>Subject:</strong> ${normalizedSubject}</li>
+                            <li><strong>Status:</strong> Pending Approval</li>
+                        </ul>
+                        `;
+
+                        EmailService(
+                            superAdminEmail,
+                            "Admin Course Subject Request",
+                            adminRequestMessage
+                        );
+
+                        const adminMessage = `
+                        <h2>Course Subject Request Submitted</h2>
+                        <p>Your request has been submitted successfully.</p>
+                        <ul>
+                            <li><strong>Course:</strong> ${cource}</li>
+                            <li><strong>Subject:</strong> ${normalizedSubject}</li>
+                            <li><strong>Status:</strong> Under Review</li>
+                        </ul>
+                        `;
+
+                        EmailService(
+                            email,
+                            "Course Subject Verification Under Process",
+                            adminMessage
+                        );
+
+                        return res.status(200).json({
+                            success: true,
+                            message: "Subject request resubmitted for superadmin approval",
+                            data: courseData
+                        });
+                    }
+
                     return res.status(409).json({
                         success: false,
                         message: "Subject already exists"
@@ -375,7 +431,10 @@ class AdminController {
 
                 courseData.subjects.push({
                     name: normalizedSubject,
-                    status: "pending"
+                    status: "pending",
+                    requesterAdminId: id,
+                    requesterAdminName: username || "",
+                    requesterAdminEmail: email || ""
                 });
 
                 await courseData.save();
@@ -437,8 +496,8 @@ class AdminController {
 
     static async deleteCourceSubject(req, res) {
         try {
-            const { cource } = req.user;
-            const { id } = req.params;  // id = subject name
+            const { cource, email, username } = req.user;
+            const { id } = req.params;
 
             if (!id) {
                 return res.status(400).json({
@@ -447,23 +506,72 @@ class AdminController {
                 });
             }
 
-            const updatedCourse = await CourseModel.findOneAndUpdate(
-                { course: cource },
-                { $pull: { subjects: id.trim() } },
-                { new: true }
-            );
-
-            if (!updatedCourse) {
+            const normalizedSubject = id.toString().trim().toLowerCase();
+            const courseData = await CourseModel.findOne({ course: cource });
+            if (!courseData) {
                 return res.status(404).json({
                     success: false,
                     message: "Course not found"
                 });
             }
 
+            const subjectItem = courseData.subjects.find(
+                (item) => item?.name?.toString().trim().toLowerCase() === normalizedSubject
+            );
+
+            if (!subjectItem) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Subject not found"
+                });
+            }
+
+            if (subjectItem.status === "delete_pending") {
+                return res.status(409).json({
+                    success: false,
+                    message: "Delete request already pending superadmin approval"
+                });
+            }
+
+            subjectItem.status = "delete_pending";
+            subjectItem.requesterAdminId = id;
+            subjectItem.requesterAdminName = username || "";
+            subjectItem.requesterAdminEmail = email || "";
+            await courseData.save();
+
+            const superAdminEmail = process.env.S_ADMIN_EMAIL;
+            const subjectName = subjectItem.name;
+
+            EmailService(
+                superAdminEmail,
+                "Course Subject Delete Request",
+                `<h2>Course Subject Delete Request</h2>
+                 <p>An admin requested subject deletion.</p>
+                 <ul>
+                    <li><strong>Admin Name:</strong> ${username}</li>
+                    <li><strong>Admin Email:</strong> ${email}</li>
+                    <li><strong>Course:</strong> ${cource}</li>
+                    <li><strong>Subject:</strong> ${subjectName}</li>
+                    <li><strong>Status:</strong> Delete Pending Approval</li>
+                 </ul>`
+            );
+
+            EmailService(
+                email,
+                "Subject Delete Request Submitted",
+                `<h2>Delete Request Submitted</h2>
+                 <p>Your request to delete a subject has been submitted to SuperAdmin.</p>
+                 <ul>
+                    <li><strong>Course:</strong> ${cource}</li>
+                    <li><strong>Subject:</strong> ${subjectName}</li>
+                    <li><strong>Status:</strong> Under Review</li>
+                 </ul>`
+            );
+
             return res.status(200).json({
                 success: true,
-                message: "Subject removed successfully",
-                course: updatedCourse
+                message: "Delete request submitted to superadmin",
+                course: courseData
             });
 
         } catch (error) {

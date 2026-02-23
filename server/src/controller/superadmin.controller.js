@@ -3,6 +3,7 @@ const UserModel = require("../models/user.model");
 const CourseModel = require("../models/course.model");
 const PostModel = require("../models/post.model");
 const UserReviewPendingModel = require("../models/userReviewPending.model");
+const EnquiryModel = require("../models/enquiry.model");
 const EmailService = require("../config/email.config.js");
 const generateToken = require("../utils/generateToken.js");
 const jwt = require("jsonwebtoken");
@@ -11,13 +12,16 @@ class SuperadminController {
     static mapPendingSubjects(courses = []) {
         return courses.flatMap((courseItem) =>
             (courseItem.subjects || [])
-                .filter((subjectItem) => subjectItem?.status === "pending")
+                .filter((subjectItem) => ["pending", "delete_pending"].includes(subjectItem?.status))
                 .map((subjectItem) => ({
                     courseId: courseItem._id,
                     course: courseItem.course,
                     subjectId: subjectItem._id,
                     name: subjectItem.name,
-                    status: subjectItem.status
+                    status: subjectItem.status,
+                    requestType: subjectItem.status === "delete_pending" ? "delete" : "add",
+                    requesterAdminName: subjectItem.requesterAdminName || "Unknown Admin",
+                    requesterAdminEmail: subjectItem.requesterAdminEmail || ""
                 }))
         );
     }
@@ -325,12 +329,18 @@ class SuperadminController {
 
     static async getPendingCourseSubjects(req, res) {
         try {
+            const filterEmail = (req.query?.adminEmail || "").toString().trim().toLowerCase();
             const courses = await CourseModel.find(
-                { "subjects.status": "pending" },
+                { "subjects.status": { $in: ["pending", "delete_pending"] } },
                 { course: 1, subjects: 1 }
             ).lean();
 
-            const pendingRequests = SuperadminController.mapPendingSubjects(courses);
+            let pendingRequests = SuperadminController.mapPendingSubjects(courses);
+            if (filterEmail) {
+                pendingRequests = pendingRequests.filter(
+                    (item) => (item.requesterAdminEmail || "").toLowerCase() === filterEmail
+                );
+            }
 
             return res.status(200).json({
                 success: true,
@@ -351,7 +361,7 @@ class SuperadminController {
             const [pendingAdminRequestsCount, pendingUserReviewsCount, pendingSubjectCourses] = await Promise.all([
                 AdminAcessRequestModel.countDocuments(),
                 UserReviewPendingModel.countDocuments({ status: "pending" }),
-                CourseModel.find({ "subjects.status": "pending" }, { course: 1, subjects: 1 }).lean()
+                CourseModel.find({ "subjects.status": { $in: ["pending", "delete_pending"] } }, { course: 1, subjects: 1 }).lean()
             ]);
 
             const pendingCourseSubjectsCount = SuperadminController.mapPendingSubjects(pendingSubjectCourses).length;
@@ -371,14 +381,35 @@ class SuperadminController {
 
     static async pendingCourseSubjectsPage(req, res) {
         try {
+            const filterEmail = (req.query?.adminEmail || "").toString().trim().toLowerCase();
             const courses = await CourseModel.find(
-                { "subjects.status": "pending" },
+                { "subjects.status": { $in: ["pending", "delete_pending"] } },
                 { course: 1, subjects: 1 }
             ).lean();
 
-            const pendingRequests = SuperadminController.mapPendingSubjects(courses);
+            let pendingRequests = SuperadminController.mapPendingSubjects(courses);
+            const requestAdmins = Array.from(
+                new Map(
+                    pendingRequests
+                        .filter((item) => item.requesterAdminEmail)
+                        .map((item) => [
+                            item.requesterAdminEmail.toLowerCase(),
+                            { name: item.requesterAdminName || "Unknown Admin", email: item.requesterAdminEmail }
+                        ])
+                ).values()
+            );
 
-            return res.render("superadmin/pending-course-subjects", { data: pendingRequests });
+            if (filterEmail) {
+                pendingRequests = pendingRequests.filter(
+                    (item) => (item.requesterAdminEmail || "").toLowerCase() === filterEmail
+                );
+            }
+
+            return res.render("superadmin/pending-course-subjects", {
+                data: pendingRequests,
+                requestAdmins,
+                selectedAdminEmail: filterEmail
+            });
         } catch (error) {
             console.error("pendingCourseSubjectsPageError:", error.message);
             return res.status(500).render("superadmin/error", { message: "Internal server error" });
@@ -388,26 +419,38 @@ class SuperadminController {
     static async approveCourseSubject(req, res) {
         try {
             const { courseId, subjectId } = req.params;
-
-            const updated = await CourseModel.findOneAndUpdate(
-                {
-                    _id: courseId,
-                    subjects: { $elemMatch: { _id: subjectId, status: "pending" } }
-                },
-                { $set: { "subjects.$.status": "approve" } },
-                { new: true }
-            );
-
-            if (!updated) {
+            const course = await CourseModel.findById(courseId);
+            if (!course) {
                 return res.status(404).json({
                     success: false,
-                    message: "Pending subject not found"
+                    message: "Course not found"
                 });
             }
 
+            const subject = course.subjects.id(subjectId);
+            if (!subject) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Subject not found"
+                });
+            }
+
+            if (subject.status === "pending") {
+                subject.status = "approve";
+            } else if (subject.status === "delete_pending") {
+                course.subjects = course.subjects.filter((item) => item._id.toString() !== subjectId);
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: "Only pending requests can be approved"
+                });
+            }
+
+            await course.save();
+
             return res.status(200).json({
                 success: true,
-                message: "Subject approved successfully"
+                message: "Subject request approved successfully"
             });
         } catch (error) {
             console.error("approveCourseSubjectError:", error.message);
@@ -421,23 +464,38 @@ class SuperadminController {
     static async rejectCourseSubject(req, res) {
         try {
             const { courseId, subjectId } = req.params;
-
-            const updated = await CourseModel.findOneAndUpdate(
-                { _id: courseId },
-                { $pull: { subjects: { _id: subjectId, status: "pending" } } },
-                { new: true }
-            );
-
-            if (!updated) {
+            const course = await CourseModel.findById(courseId);
+            if (!course) {
                 return res.status(404).json({
                     success: false,
                     message: "Course not found"
                 });
             }
 
+            const subject = course.subjects.id(subjectId);
+            if (!subject) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Subject not found"
+                });
+            }
+
+            if (subject.status === "pending") {
+                subject.status = "rejected";
+            } else if (subject.status === "delete_pending") {
+                subject.status = "approve";
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: "Only pending requests can be rejected"
+                });
+            }
+
+            await course.save();
+
             return res.status(200).json({
                 success: true,
-                message: "Pending subject rejected successfully"
+                message: "Subject request rejected successfully"
             });
         } catch (error) {
             console.error("rejectCourseSubjectError:", error.message);
@@ -450,7 +508,13 @@ class SuperadminController {
 
     static async getPendingUserReviews(req, res) {
         try {
-            const reviews = await UserReviewPendingModel.find({ status: "pending" })
+            const filterEmail = (req.query?.submitterEmail || "").toString().trim().toLowerCase();
+            const filter = { status: "pending" };
+            if (filterEmail) {
+                filter.submitterEmail = filterEmail;
+            }
+
+            const reviews = await UserReviewPendingModel.find(filter)
                 .sort({ createdAt: -1 })
                 .lean();
 
@@ -470,13 +534,82 @@ class SuperadminController {
 
     static async pendingUserReviewsPage(req, res) {
         try {
-            const reviews = await UserReviewPendingModel.find({ status: "pending" })
+            const filterEmail = (req.query?.submitterEmail || "").toString().trim().toLowerCase();
+
+            const allPending = await UserReviewPendingModel.find({ status: "pending" })
                 .sort({ createdAt: -1 })
                 .lean();
 
-            return res.render("superadmin/pending-user-reviews", { data: reviews });
+            const submitters = Array.from(
+                new Map(
+                    allPending
+                        .filter((item) => item.submitterEmail)
+                        .map((item) => [
+                            item.submitterEmail.toLowerCase(),
+                            { name: item.submitterName || "Unknown User", email: item.submitterEmail }
+                        ])
+                ).values()
+            );
+
+            const reviews = filterEmail
+                ? allPending.filter((item) => (item.submitterEmail || "").toLowerCase() === filterEmail)
+                : allPending;
+
+            return res.render("superadmin/pending-user-reviews", {
+                data: reviews,
+                submitters,
+                selectedSubmitterEmail: filterEmail
+            });
         } catch (error) {
             console.error("pendingUserReviewsPageError:", error.message);
+            return res.status(500).render("superadmin/error", { message: "Internal server error" });
+        }
+    }
+
+    static async usersPage(req, res) {
+        try {
+            const users = await UserModel.find({ role: "user" })
+                .select("username email phone cource isBlocked")
+                .sort({ createdAt: -1 })
+                .lean();
+
+            return res.render("superadmin/users", { data: users });
+        } catch (error) {
+            console.error("usersPageError:", error.message);
+            return res.status(500).render("superadmin/error", { message: "Internal server error" });
+        }
+    }
+
+    static async freezeUser(req, res) {
+        try {
+            const { id } = req.params;
+            const user = await UserModel.findByIdAndUpdate(id, { isBlocked: true }, { new: true });
+            if (!user) return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(200).json({ success: true, message: "User blocked successfully" });
+        } catch (error) {
+            console.error("freezeUserBySuperAdminError:", error.message);
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    static async unfreezeUser(req, res) {
+        try {
+            const { id } = req.params;
+            const user = await UserModel.findByIdAndUpdate(id, { isBlocked: false }, { new: true });
+            if (!user) return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(200).json({ success: true, message: "User unblocked successfully" });
+        } catch (error) {
+            console.error("unfreezeUserBySuperAdminError:", error.message);
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    static async enquiriesPage(req, res) {
+        try {
+            const enquiries = await EnquiryModel.find().sort({ createdAt: -1 }).lean();
+            return res.render("superadmin/enquiries", { data: enquiries });
+        } catch (error) {
+            console.error("enquiriesPageError:", error.message);
             return res.status(500).render("superadmin/error", { message: "Internal server error" });
         }
     }

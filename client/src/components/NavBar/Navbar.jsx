@@ -3,11 +3,7 @@ import { useAuthStore } from '../../store/useAuthStore'
 import HamburgerMenu from '../HamburgerMenu/HamburgerMenu'
 
 const Navbar = ({ mobileMenuOpen, toggleMenu }) => {
-  const { isLoggedIn, role, logout, user } = useAuthStore()
-
-  const handleLogout = async () => {
-    await logout()
-  }
+  const { isLoggedIn, role, user } = useAuthStore()
 
   const getInitial = () => {
     return user?.username ? user.username.charAt(0).toUpperCase() : '?'
@@ -59,12 +55,6 @@ const Navbar = ({ mobileMenuOpen, toggleMenu }) => {
               <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold text-lg shadow-sm transition-all duration-300 cursor-pointer">
                 {getInitial()}
               </div>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 transition-colors duration-300"
-              >
-                Logout
-              </button>
             </>
           ) : (
             <>

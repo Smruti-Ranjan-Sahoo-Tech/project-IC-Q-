@@ -8,12 +8,13 @@ import {
   List,
   User,
   BookOpen,
-  LogOut
+  LogOut,
+  Mail
 } from "lucide-react";
 
 const AdminSidebar = () => {
   const location = useLocation();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const menuItems = [
     {
@@ -46,6 +47,11 @@ const AdminSidebar = () => {
       icon: User,
       path: "/admin/profile",
     },
+    {
+      label: "Enquiries",
+      icon: Mail,
+      path: "/admin/enquiries",
+    },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -55,10 +61,15 @@ const AdminSidebar = () => {
 
       <div>
         <div className="h-16 flex items-center justify-center md:justify-start px-2 md:px-6 border-b border-teal-900/40">
-          <h1 className="text-xl font-semibold text-white tracking-wide">
-            <span className="md:hidden text-amber-400">A</span>
-            <span className="hidden md:inline">Admin <span className="text-amber-400">Panel</span></span>
-          </h1>
+          <div>
+            <h1 className="text-xl font-semibold text-white tracking-wide">
+              <span className="md:hidden text-amber-400">A</span>
+              <span className="hidden md:inline">Admin <span className="text-amber-400">Panel</span></span>
+            </h1>
+            <p className="hidden md:block text-xs text-slate-300 mt-0.5 truncate max-w-48">
+              {user?.username || "Admin"}
+            </p>
+          </div>
         </div>
 
         <nav className="p-2 md:p-4 space-y-2">

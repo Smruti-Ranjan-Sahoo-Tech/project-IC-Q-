@@ -26,7 +26,11 @@ const UpdateProfile = () => {
         passoutYear: user.passoutYear ? new Date(user.passoutYear).toISOString().split('T')[0] : ''
       })
     }
-  }, [user, isInitializing])
+
+    if (!isInitializing && !user) {
+      navigate('/login')
+    }
+  }, [user, isInitializing, navigate])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -45,14 +49,22 @@ const UpdateProfile = () => {
     }
 
     try {
-      await updateProfile(formData)
+      const payload = {
+        ...formData,
+        username: formData.username.trim(),
+        phone: String(formData.phone).trim(),
+        cource: formData.cource.trim(),
+        passoutYear: formData.passoutYear || undefined
+      }
+
+      await updateProfile(payload)
       setSuccessMsg('Profile updated successfully!')
       setTimeout(() => {
         setSuccessMsg('')
         navigate('/profile')
       }, 2000)
     } catch (error) {
-      toast.error('Failed to update profile')
+      // error toast is already handled in store
     }
   }
 

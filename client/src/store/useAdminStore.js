@@ -9,6 +9,8 @@ export const useAdminStore = create((set, get) => ({
     dashBoardDataLoding: false,
     allUser:[],
     allUserLoading:false,
+    enquiries: [],
+    enquiriesLoading: false,
     setFreezeUser:async(id)=>{
         try {
             const res=await axiosInstance.put(`/admin/freezeUser/${id}`)
@@ -41,6 +43,18 @@ export const useAdminStore = create((set, get) => ({
            }finally{
             set({ allUserLoading: false })
            }
+    },
+
+    getAllEnquiries: async () => {
+        set({ enquiriesLoading: true })
+        try {
+            const res = await axiosInstance.get("/enquiry/all")
+            set({ enquiries: res.data.data || [] })
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        } finally {
+            set({ enquiriesLoading: false })
+        }
     },
     
      getDashboardData: async () => {

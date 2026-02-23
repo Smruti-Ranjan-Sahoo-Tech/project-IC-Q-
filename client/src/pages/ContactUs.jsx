@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { axiosInstance } from '../API/axiosInstace'
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -19,8 +20,13 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    toast.success('Message sent successfully! We will get back to you soon.')
-    setFormData({ name: '', email: '', subject: '', message: '' })
+    try {
+      await axiosInstance.post('/enquiry/submit', formData)
+      toast.success('Message sent successfully! We will get back to you soon.')
+      setFormData({ name: '', email: '', subject: '', message: '' })
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Failed to send message')
+    }
   }
 
   return (

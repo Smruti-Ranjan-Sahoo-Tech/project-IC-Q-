@@ -1,16 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAdminStore } from "../../store/useAdminStore";
 import { useCourseStore } from "../../store/useCourseStore";
-import {
-  Pencil,
-  Trash2,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  LoaderCircle,
-  ListChecks
-} from "lucide-react";
+import { ListChecks } from "lucide-react";
 import { toast } from "react-toastify";
+import QuestionsTable from "./AllQuestionsParts/QuestionsTable";
+import QuestionsPagination from "./AllQuestionsParts/QuestionsPagination";
+import EditQuestionModal from "./AllQuestionsParts/EditQuestionModal";
 
 const QUESTIONS_PER_PAGE = 8;
 
@@ -178,233 +173,33 @@ const AllQuestions = () => {
         </div>
 
         <div className="rounded-2xl overflow-hidden border border-teal-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-xl">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] md:min-w-[900px]">
-              <thead className="bg-slate-100 dark:bg-slate-800">
-                <tr>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Question</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Type</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Subject</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Company</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Location</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Course</th>
-                  <th className="text-left p-4 text-sm font-semibold text-slate-700 dark:text-slate-200">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400">
-                      <span className="inline-flex items-center gap-2">
-                        <LoaderCircle className="animate-spin" size={18} />
-                        Loading questions...
-                      </span>
-                    </td>
-                  </tr>
-                ) : paginatedPosts.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400">
-                      No questions found.
-                    </td>
-                  </tr>
-                ) : (
-                  paginatedPosts.map((post) => (
-                    <tr key={post._id} className="border-t border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                      <td className="p-4 align-top">
-                        <p className="text-slate-900 dark:text-slate-100 font-medium line-clamp-2">
-                          {post.question}
-                        </p>
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{post.questionType}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{post.subject}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{post.company || "N/A"}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{post.location || "N/A"}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{post.cource}</td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => openEditModal(post)}
-                            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm"
-                          >
-                            <Pencil size={14} />
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(post._id)}
-                            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-sm"
-                          >
-                            <Trash2 size={14} />
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {totalPages > 1 && (
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 disabled:opacity-50"
-              >
-                <ChevronLeft size={16} />
-              </button>
-
-              {Array.from({ length: totalPages }).map((_, idx) => {
-                const page = idx + 1;
-                return (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-1 rounded-lg text-sm ${
-                      page === currentPage
-                        ? "bg-teal-600 text-white"
-                        : "border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                );
-              })}
-
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 disabled:opacity-50"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          )}
+          <QuestionsTable
+            loading={loading}
+            posts={paginatedPosts}
+            onEdit={openEditModal}
+            onDelete={handleDelete}
+          />
+          <QuestionsPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
 
-      {editingPost && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm p-4 flex items-center justify-center">
-          <div className="w-full max-w-2xl rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-800">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Edit Question</h2>
-              <button
-                onClick={closeEditModal}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdate} className="p-5 space-y-4">
-              <textarea
-                name="question"
-                value={editData.question}
-                onChange={handleEditChange}
-                rows={3}
-                className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-              />
-              <textarea
-                name="answer"
-                value={editData.answer}
-                onChange={handleEditChange}
-                rows={6}
-                className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <select
-                  name="questionType"
-                  value={editData.questionType}
-                  onChange={handleEditChange}
-                  className="p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                >
-                  <option value="Interview">Interview</option>
-                  <option value="Coding">Coding</option>
-                  <option value="Subjective">Subjective</option>
-                </select>
-                <select
-                  name="subject"
-                  value={editData.subject}
-                  onChange={handleEditChange}
-                  disabled={loadingSubjects}
-                  className="p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                >
-                  <option value="">{loadingSubjects ? "Loading..." : "Select subject"}</option>
-                  {selectableSubjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <select
-                  name="companyType"
-                  value={editData.companyType}
-                  onChange={handleEditChange}
-                  className="p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                >
-                  <option value="MNC">MNC</option>
-                  <option value="Startup">Startup</option>
-                  <option value="Other">Other</option>
-                </select>
-
-                <select
-                  name="company"
-                  value={editData.company}
-                  onChange={handleEditChange}
-                  className="p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                >
-                  <option value="">Select company</option>
-                  {companies.map((company) => (
-                    <option key={company} value={company}>
-                      {company}
-                    </option>
-                  ))}
-                  <option value="__new__">+ Add new company</option>
-                </select>
-
-                <input
-                  name="location"
-                  value={editData.location}
-                  onChange={handleEditChange}
-                  placeholder="Location"
-                  className="p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                />
-              </div>
-
-              {editData.company === "__new__" && (
-                <input
-                  value={editNewCompany}
-                  onChange={(e) => setEditNewCompany(e.target.value)}
-                  placeholder="Enter new company name"
-                  className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
-                />
-              )}
-
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-60"
-                >
-                  {loading ? "Updating..." : "Update Question"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <EditQuestionModal
+        isOpen={Boolean(editingPost)}
+        onClose={closeEditModal}
+        onSubmit={handleUpdate}
+        editData={editData}
+        onEditChange={handleEditChange}
+        editNewCompany={editNewCompany}
+        onEditNewCompanyChange={setEditNewCompany}
+        companies={companies}
+        selectableSubjects={selectableSubjects}
+        loadingSubjects={loadingSubjects}
+        loading={loading}
+      />
     </div>
   );
 };

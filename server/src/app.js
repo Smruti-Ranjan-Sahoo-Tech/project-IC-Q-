@@ -3,6 +3,7 @@ const authRouter=require('./routes/auth.routes')
 const adminRouter=require('./routes/admin.routes')
 const userRouter=require('./routes/user.routes')
 const superadminRouter=require('./routes/superadmin.routes')
+const enquiryRouter=require('./routes/enquiry.routes')
 const path = require("path");
 const cors=require('cors')
 const methodOverride = require('method-override');
@@ -29,6 +30,7 @@ app.use("/auth", authRouter);
 app.use("/user",userRouter)
 app.use("/admin", adminRouter);
 app.use("/superadmin", superadminRouter);
+app.use("/enquiry", enquiryRouter);
 
 
 app.get("/", (req, res) => {

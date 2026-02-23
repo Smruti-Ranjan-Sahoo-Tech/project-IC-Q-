@@ -7,6 +7,7 @@ import AddQuestion from '../components/PrivateDashboardComponents/AddQuestion'
 import AllQuestions from '../components/PrivateDashboardComponents/AllQuestions'
 import AdminProfile from '../components/PrivateDashboardComponents/AdminProfile'
 import CourseSubject from '../components/PrivateDashboardComponents/CourseSubject'
+import AdminEnquiries from '../components/PrivateDashboardComponents/AdminEnquiries'
 
 const AdminDashboard = () => {
   return (
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
           <Route path="/add-question" element={<AddQuestion />} />
           <Route path="/all-questions" element={<AllQuestions />} />
           <Route path="/profile" element={<AdminProfile />} />
+          <Route path="/enquiries" element={<AdminEnquiries />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>

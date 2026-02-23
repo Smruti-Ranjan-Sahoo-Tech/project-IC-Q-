@@ -2,7 +2,15 @@ import { create } from "zustand"
 import { axiosInstance } from "../API/axiosInstace"
 import { toast } from "react-toastify"
 
-export const useUserStore = create((set) => ({
+const defaultUserDashboardFilters = {
+    subject: "",
+    questionType: "",
+    companyType: "all",
+    company: "all",
+    location: "all"
+}
+
+export const useUserStore = create((set, get) => ({
     posts: [],
     subjects: [],
     pendingReviews: [],
@@ -19,6 +27,7 @@ export const useUserStore = create((set) => ({
         total: 0,
         totalPages: 0
     },
+    userDashboardFilters: { ...defaultUserDashboardFilters },
     pagination: {
         currentPage: 1,
         limit: 10,
@@ -75,6 +84,32 @@ export const useUserStore = create((set) => ({
         } finally {
             set({ subjectLoading: false })
         }
+    },
+
+    setUserDashboardFilters: (updates) => {
+        set((state) => ({
+            userDashboardFilters: {
+                ...state.userDashboardFilters,
+                ...updates
+            }
+        }))
+    },
+
+    resetUserDashboardFilters: () => {
+        set({ userDashboardFilters: { ...defaultUserDashboardFilters } })
+    },
+
+    fetchUserDashboardPosts: async ({ page = 1, limit = 10 } = {}) => {
+        const { userDashboardFilters, getPostData } = get()
+        return getPostData({
+            subject: userDashboardFilters.subject || "all",
+            questionType: userDashboardFilters.questionType || "all",
+            companyType: userDashboardFilters.companyType || "all",
+            company: userDashboardFilters.company || "all",
+            location: userDashboardFilters.location || "all",
+            page,
+            limit
+        })
     },
 
     addReview: async (payload) => {
@@ -151,6 +186,7 @@ export const useUserStore = create((set) => ({
         pendingReviews: [],
         approvedReviews: [],
         allUserReviews: [],
+        userDashboardFilters: { ...defaultUserDashboardFilters },
         pagination: { currentPage: 1, limit: 10, total: 0, totalPages: 0 },
         allUserReviewsPagination: { currentPage: 1, limit: 10, total: 0, totalPages: 0 }
     })
