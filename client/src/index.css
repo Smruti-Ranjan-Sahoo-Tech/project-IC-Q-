@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Tailwind v4: enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== GLOBAL THEME TRANSITION SETUP ===== */
+/* All theme-aware elements transition smoothly between light and dark modes */
+
 :root {
   /* Light Mode Colors */
   --bg-primary: #ffffff;
@@ -54,17 +60,19 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
+/* ===== SMOOTH TRANSITIONS FOR THEME SWITCHING ===== */
+/* Limit transitions to avoid jitter on complex components */
+html, body, main, [role="main"] {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Smooth color scheme transition */
 * {
   color-scheme: light;
 }
 
 .dark * {
   color-scheme: dark;
-}
-
-/* Smooth transitions for theme switching */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Selection colors for both themes */
@@ -91,12 +99,14 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--text-tertiary);
   border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
 
+/* ===== ANIMATION DEFINITIONS ===== */
 @keyframes logo-marquee-rtl {
   0% {
     transform: translate3d(0, 0, 0);
@@ -191,7 +201,69 @@ body {
   }
 }
 
+/* ===== THEME TRANSITION UTILITY CLASSES ===== */
+/* Use these for custom transition control */
+.theme-transition {
+  transition: background-color 0.3s ease;
+}
+
+.theme-transition-fast {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-transition-slow {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.theme-transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Ensure inputs and form elements transition smoothly */
+input, textarea, select, button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Links and hover states */
+a {
+  transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Subtle hover lift for interactive elements */
+a:hover,
+button:hover,
+[role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+a:active,
+button:active,
+[role="button"]:active {
+  transform: translateY(0);
+}
+
+/* Reusable hover effects for cards/tiles */
+.hover-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+.dark .hover-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* ===== RESPONSIVE BEHAVIOR ===== */
 @media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .logo-marquee-track,
   .logo-card-float,
   .home-text-reveal,

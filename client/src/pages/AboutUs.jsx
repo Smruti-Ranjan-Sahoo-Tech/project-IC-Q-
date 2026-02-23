@@ -1,3 +1,5 @@
+import Footer from '../components/Footer/Footer'
+
 const AboutUs = () => {
   const teamMembers = [
     { name: 'John Doe', role: 'CEO & Founder', bio: 'Passionate about education technology' },
@@ -14,6 +16,7 @@ const AboutUs = () => {
   ]
 
   return (
+    <>
     <div className="w-full">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
@@ -22,7 +25,7 @@ const AboutUs = () => {
         <div className="absolute bottom-10 right-10 w-72 h-72 bg-amber-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
 
         <div className="relative z-10 text-center text-white max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">About Learning Hub</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">About Learning Club</h1>
           <p className="text-xl md:text-2xl opacity-95">
             Empowering developers worldwide with quality learning resources and community support
           </p>
@@ -37,7 +40,7 @@ const AboutUs = () => {
           <div>
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Our Mission</h2>
             <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-              Learning Hub is dedicated to providing high-quality, curated programming questions and answers to help developers master their craft. We believe in democratizing education and creating a platform where anyone can learn, grow, and excel in programming.
+              Learning Club is dedicated to providing high-quality, curated programming questions and answers to help developers master their craft. We believe in democratizing education and creating a platform where anyone can learn, grow, and excel in programming.
             </p>
           </div>
 
@@ -59,7 +62,7 @@ const AboutUs = () => {
                 { title: 'Active Community', description: 'Support from experienced developers' },
                 { title: 'Continuous Updates', description: 'Fresh content aligned with industry trends' },
               ].map((item, idx) => (
-                <div key={idx} className="bg-white dark:bg-gray-800 p-6 rounded-xl border-l-4 border-teal-600 dark:border-teal-400 hover:shadow-lg transition-all duration-300">
+                <div key={idx} className="hover-card bg-white dark:bg-gray-800 p-6 rounded-xl border-l-4 border-teal-600 dark:border-teal-400 hover:shadow-lg transition-all duration-300">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
                   <p className="text-gray-700 dark:text-gray-300">{item.description}</p>
                 </div>
@@ -74,12 +77,12 @@ const AboutUs = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 dark:text-white mb-4">Our Team</h2>
           <p className="text-center text-gray-600 dark:text-gray-400 text-lg mb-16 max-w-2xl mx-auto">
-            Meet the passionate people behind Learning Hub
+            Meet the passionate people behind Learning Club
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {teamMembers.map((member, idx) => (
-              <div key={idx} className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+              <div key={idx} className="hover-card bg-gray-50 dark:bg-gray-900 p-6 rounded-xl text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <div className="text-5xl mb-4">👤</div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
                 <p className="text-teal-600 dark:text-teal-400 font-semibold mb-3">{member.role}</p>
@@ -97,7 +100,7 @@ const AboutUs = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, idx) => (
-              <div key={idx} className="bg-white dark:bg-gray-900 p-6 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-teal-600 dark:hover:border-teal-400 hover:shadow-lg transition-all duration-300 text-center">
+              <div key={idx} className="hover-card bg-white dark:bg-gray-900 p-6 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-teal-600 dark:hover:border-teal-400 hover:shadow-lg transition-all duration-300 text-center">
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{value.title}</h3>
                 <p className="text-gray-700 dark:text-gray-300">{value.description}</p>
               </div>
@@ -125,8 +128,11 @@ const AboutUs = () => {
         </div>
       </section>
     </div>
+    <Footer />
+    </>
   )
 }
 
 export default AboutUs
+
 

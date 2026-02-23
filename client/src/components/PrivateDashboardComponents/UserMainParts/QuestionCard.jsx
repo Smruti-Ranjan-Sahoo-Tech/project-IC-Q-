@@ -3,7 +3,7 @@ const QuestionCard = ({ post, isOpen, onToggle }) => {
   const authorRoleLabel = authorRole === "user" ? "Student" : "Trainer";
 
   return (
-    <div className="border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all overflow-hidden">
+    <div className="hover-card border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all overflow-hidden">
       <div className="h-1 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400"></div>
       <div className="p-5">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">

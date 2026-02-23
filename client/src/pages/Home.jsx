@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GoArrowUpRight } from "react-icons/go";
 import { useAuthStore } from "../store/useAuthStore";
+import Footer from "../components/Footer/Footer";
 
 const Home = () => {
   const { isLoggedIn, role } = useAuthStore();
@@ -54,7 +55,8 @@ const Home = () => {
   ];
 
   return (
-    <main className="bg-white dark:bg-slate-950">
+    <>
+      <main className="bg-white dark:bg-slate-950">
       <section className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100">
         <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -94,7 +96,7 @@ const Home = () => {
 
           <div className="home-box-pop home-delay-2 bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 space-y-6 border border-slate-200 dark:border-slate-800">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="home-box-pop home-delay-3 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+              <div className="home-box-pop home-delay-3 hover-card border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
                 <h3 className="font-semibold text-lg text-amber-500">
                   Aptitude
                 </h3>
@@ -103,14 +105,14 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="home-box-pop home-delay-4 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+              <div className="home-box-pop home-delay-4 hover-card border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
                 <h3 className="font-semibold text-lg text-amber-500">Coding</h3>
                 <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
                   DSA and company problems
                 </p>
               </div>
 
-              <div className="home-box-pop home-delay-5 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
+              <div className="home-box-pop home-delay-5 hover-card border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center hover:shadow-md transition">
                 <h3 className="font-semibold text-lg text-amber-500">
                   Interviews
                 </h3>
@@ -150,7 +152,7 @@ const Home = () => {
             ].map((title) => (
               <div
                 key={title}
-                className="home-box-pop bg-white dark:bg-slate-950 p-6 rounded-xl shadow-md border border-slate-200 dark:border-slate-800"
+                className="home-box-pop hover-card bg-white dark:bg-slate-950 p-6 rounded-xl shadow-md border border-slate-200 dark:border-slate-800"
               >
                 <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
                   {title}
@@ -190,24 +192,29 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="bg-gray-900 text-white py-16 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold">
+      <section className="relative py-20 md:py-28 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-slate-900 to-amber-500"></div>
+        <div className="absolute bottom-0 left-20 w-80 h-80 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob-delay-1"></div>
+
+        <div className="relative z-10 max-w-5xl mx-auto text-center text-white">
+          <h2 className="text-3xl md:text-4xl font-bold">
             Start Your Developer Journey Today
           </h2>
-          <p className="mt-4 text-gray-300">
+          <p className="mt-4 text-lg md:text-xl opacity-95">
             Explore curated learning resources and level up your skills with
             confidence.
           </p>
           <button
             onClick={dashboardDirect}
-            className="mt-6 bg-gray-900 border-white border-2 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 hover:text-amber-500 transition"
+            className="mt-8 inline-flex items-center justify-center px-8 py-3 rounded-lg bg-white text-teal-700 font-semibold hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
           >
             Start Learning
           </button>
         </div>
       </section>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 };
 

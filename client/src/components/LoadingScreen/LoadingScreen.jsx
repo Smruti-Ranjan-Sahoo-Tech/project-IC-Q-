@@ -10,7 +10,7 @@ const LoadingScreen = () => {
         </div>
 
         <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Learning Hub
+          Learning Club
         </h2>
 
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-teal-200 dark:border-slate-700 border-t-teal-600 dark:border-t-teal-300" />
@@ -24,3 +24,4 @@ const LoadingScreen = () => {
 }
 
 export default LoadingScreen
+

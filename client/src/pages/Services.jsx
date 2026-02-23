@@ -1,5 +1,6 @@
 import { useAuthStore } from '../store/useAuthStore'
 import { Link } from 'react-router-dom'
+import Footer from '../components/Footer/Footer'
 
 const Services = () => {
   const { isLoggedIn } = useAuthStore()
@@ -56,6 +57,7 @@ const Services = () => {
   ]
 
   return (
+    <>
     <div className="w-full">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
@@ -74,7 +76,7 @@ const Services = () => {
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl border-2 border-gray-200 dark:border-gray-800 hover:border-teal-600 dark:hover:border-teal-400 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+            <div key={idx} className="hover-card bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl border-2 border-gray-200 dark:border-gray-800 hover:border-teal-600 dark:hover:border-teal-400 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
               <div className="text-5xl mb-4">{service.icon}</div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{service.title}</h3>
               <p className="text-gray-700 dark:text-gray-300 mb-6">{service.description}</p>
@@ -96,7 +98,7 @@ const Services = () => {
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {adminServices.map((service, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl text-center">
+            <div key={idx} className="hover-card bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-2xl text-center">
               <div className="text-5xl mb-4 inline-block">{service.icon}</div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{service.title}</h3>
               <p className="text-gray-700 dark:text-gray-300">{service.description}</p>
@@ -111,7 +113,7 @@ const Services = () => {
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {pricing.map((plan, idx) => (
-            <div key={idx} className={`rounded-xl shadow-lg dark:shadow-2xl p-8 relative transition-all duration-300 ${
+            <div key={idx} className={`hover-card rounded-xl shadow-lg dark:shadow-2xl p-8 relative transition-all duration-300 ${
               plan.badge 
                 ? 'bg-teal-600 text-white border-4 border-teal-600 transform scale-105' 
                 : 'bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white'
@@ -153,7 +155,7 @@ const Services = () => {
 
         <div className="relative z-10 text-center text-white">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl md:text-2xl mb-10 opacity-95">Join thousands of developers learning on Learning Hub</p>
+          <p className="text-xl md:text-2xl mb-10 opacity-95">Join thousands of developers learning on Learning Club</p>
           
           {!isLoggedIn && (
             <Link 
@@ -166,8 +168,11 @@ const Services = () => {
         </div>
       </section>
     </div>
+    <Footer />
+    </>
   )
 }
 
 export default Services
+
 

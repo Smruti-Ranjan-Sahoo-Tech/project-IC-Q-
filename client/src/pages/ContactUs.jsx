@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { axiosInstance } from '../API/axiosInstace'
+import Footer from '../components/Footer/Footer'
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,7 @@ const ContactUs = () => {
   }
 
   return (
+    <>
     <div className="w-full">
       {/* Hero */}
       <section className="relative py-20 md:py-32 px-4 md:px-8 overflow-hidden">
@@ -79,7 +81,7 @@ const ContactUs = () => {
                     <a
                       key={idx}
                       href="#"
-                      className="w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full flex items-center justify-center font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                      className="hover-card w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full flex items-center justify-center font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                     >
                       {social.icon}
                     </a>
@@ -166,7 +168,7 @@ const ContactUs = () => {
             { q: 'How often is content updated?', a: 'We add new questions regularly based on industry trends.' },
             { q: 'Can I download resources?', a: 'Yes, premium members can download solutions.' },
           ].map((faq, idx) => (
-            <div key={idx} className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-4 border-teal-600 dark:border-teal-400">
+            <div key={idx} className="hover-card bg-white dark:bg-gray-900 p-6 rounded-xl border-l-4 border-teal-600 dark:border-teal-400">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">❓ {faq.q}</h3>
               <p className="text-gray-700 dark:text-gray-300">{faq.a}</p>
             </div>
@@ -174,6 +176,8 @@ const ContactUs = () => {
         </div>
       </section>
     </div>
+    <Footer />
+    </>
   )
 }
 

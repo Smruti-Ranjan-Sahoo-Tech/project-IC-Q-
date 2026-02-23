@@ -17,7 +17,7 @@ const FiltersPanel = ({
   const questionTypes = ["Interview", "Coding", "Subjective"];
 
   return (
-    <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm p-5 md:p-6 mb-6">
+    <section className="hover-card rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm p-5 md:p-6 mb-6">
       <div className="flex flex-wrap gap-4 items-end">
         <div className="flex flex-col min-w-[200px]">
           <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
