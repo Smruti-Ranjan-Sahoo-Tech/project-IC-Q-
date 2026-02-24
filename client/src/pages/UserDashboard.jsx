@@ -8,7 +8,7 @@ import AllUserReviews from '../components/PrivateDashboardComponents/AllUserRevi
 
 const UserDashboard = () => {
   return (
-    <div className="flex h-full bg-white overflow-hidden">
+    <div className="flex h-full bg-gradient-to-br from-teal-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 overflow-hidden">
       {/* Sidebar */}
       <UserSidebar />
 

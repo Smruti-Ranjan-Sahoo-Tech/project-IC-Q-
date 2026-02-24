@@ -5,6 +5,13 @@ const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken.js");
 const EmailService = require("../config/email.config.js");
 
+const isStrongPassword = (password = "") => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+};
+
+const PASSWORD_RULE_MESSAGE =
+    "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.";
+
 class AuthController {
 
     static async register(req, res) {
@@ -46,6 +53,15 @@ class AuthController {
 
                 return res.status(202).json({ message: "Your admin request is under review", newAdminRequest });
             }
+
+            if (!passoutYear || !password) {
+                return res.status(400).json({ message: "All field are required" });
+            }
+
+            if (!isStrongPassword(password)) {
+                return res.status(400).json({ message: PASSWORD_RULE_MESSAGE });
+            }
+
             const hashPassword = await bcrypt.hash(password, Number(process.env.SALT));
 
             // ADMIN
@@ -77,9 +93,6 @@ class AuthController {
             }
 
             // USER
-            if (!passoutYear || !password) {
-                return res.status(400).json({ message: "All field are required" });
-            }
             await UserModel.create({ username, email,  hashPassword, role, phone, cource, passoutYear });
             
             // professional email to user

@@ -1,22 +1,110 @@
 import { useAuthStore } from '../store/useAuthStore'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import { LogOut, Trash2, Edit2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { LogOut, Trash2, Edit2, Lock } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 const Profile = () => {
-  const { user, logout, deleteProfile, isInitializing, checkAuthStatus } = useAuthStore()
+  const { user, logout, deleteProfile, isInitializing, changePassword, loading } = useAuthStore()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    // Check auth status on mount to load user data
-    checkAuthStatus()
-  }, [checkAuthStatus])
+  // State for password change form
+  const [showPasswordForm, setShowPasswordForm] = useState(false)
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  })
+  const [passwordErrors, setPasswordErrors] = useState({})
 
   useEffect(() => {
     if (!isInitializing && !user) {
       navigate('/login')
     }
   }, [user, isInitializing, navigate])
+
+  // Validate password requirements
+  const validatePassword = (password) => {
+    const errors = {}
+    if (password.length < 8) {
+      errors.length = 'Password must be at least 8 characters'
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.uppercase = 'Password must contain at least one uppercase letter'
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.number = 'Password must contain at least one number'
+    }
+    if (!/[!@#$%^&*]/.test(password)) {
+      errors.special = 'Password must contain at least one special character (!@#$%^&*)'
+    }
+    return errors
+  }
+
+  // Handle password change
+  const handleChangePassword = async (e) => {
+    e.preventDefault()
+    const errors = {}
+
+    // Validate inputs
+    if (!passwordData.oldPassword.trim()) {
+      errors.oldPassword = 'Current password is required'
+    }
+    if (!passwordData.newPassword.trim()) {
+      errors.newPassword = 'New password is required'
+    } else {
+      const pwErrors = validatePassword(passwordData.newPassword)
+      if (Object.keys(pwErrors).length > 0) {
+        Object.assign(errors, pwErrors)
+      }
+    }
+    if (!passwordData.confirmPassword.trim()) {
+      errors.confirmPassword = 'Please confirm your new password'
+    } else if (passwordData.newPassword !== passwordData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match'
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setPasswordErrors(errors)
+      return
+    }
+
+    // Check if new password is same as old password
+    if (passwordData.oldPassword === passwordData.newPassword) {
+      setPasswordErrors({ newPassword: 'New password must be different from current password' })
+      return
+    }
+
+    try {
+      await changePassword(passwordData.oldPassword, passwordData.newPassword)
+      // Clear form and close
+      setPasswordData({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      })
+      setPasswordErrors({})
+      setShowPasswordForm(false)
+      toast.success('Password changed successfully!')
+    } catch (error) {
+      // Error is handled in store
+    }
+  }
+
+  const handlePasswordInputChange = (e) => {
+    const { name, value } = e.target
+    setPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    // Clear error for this field when user starts typing
+    if (passwordErrors[name]) {
+      setPasswordErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -135,75 +223,131 @@ const Profile = () => {
             </div>
 
             {/* Change Password Form */}
-            {/* {showPasswordForm && (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-6 border border-slate-200 dark:border-slate-700">
+            {showPasswordForm && (
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-6 border border-slate-200 dark:border-slate-700 transition-all duration-300">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                   <Lock size={24} />
                   Change Password
                 </h3>
                 
-                <form onSubmit={handleChangePassword} className="space-y-4">
+                <form onSubmit={handleChangePassword} className="space-y-5">
+                  {/* Current Password */}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                      Current Password
+                      Current Password <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
+                      name="oldPassword"
                       value={passwordData.oldPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                      onChange={handlePasswordInputChange}
                       placeholder="Enter your current password"
-                      className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
+                      className={`w-full px-4 py-3 border ${
+                        passwordErrors.oldPassword ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'
+                      } bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 ${
+                        passwordErrors.oldPassword ? 'focus:ring-red-500' : 'focus:ring-blue-500'
+                      } transition-all duration-300`}
                     />
+                    {passwordErrors.oldPassword && (
+                      <p className="text-red-500 text-sm mt-1">{passwordErrors.oldPassword}</p>
+                    )}
                   </div>
 
+                  {/* New Password */}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                      New Password
+                      New Password <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
+                      name="newPassword"
                       value={passwordData.newPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      onChange={handlePasswordInputChange}
                       placeholder="Enter new password"
-                      className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
+                      className={`w-full px-4 py-3 border ${
+                        passwordErrors.length || passwordErrors.uppercase || passwordErrors.number || passwordErrors.special || passwordErrors.newPassword 
+                          ? 'border-red-500' 
+                          : 'border-slate-300 dark:border-slate-600'
+                      } bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 ${
+                        passwordErrors.length || passwordErrors.uppercase || passwordErrors.number || passwordErrors.special || passwordErrors.newPassword
+                          ? 'focus:ring-red-500' 
+                          : 'focus:ring-blue-500'
+                      } transition-all duration-300`}
                     />
+                    {(passwordErrors.length || passwordErrors.uppercase || passwordErrors.number || passwordErrors.special || passwordErrors.newPassword) && (
+                      <div className="text-red-500 text-sm mt-1 space-y-1">
+                        {passwordErrors.length && <p>• {passwordErrors.length}</p>}
+                        {passwordErrors.uppercase && <p>• {passwordErrors.uppercase}</p>}
+                        {passwordErrors.number && <p>• {passwordErrors.number}</p>}
+                        {passwordErrors.special && <p>• {passwordErrors.special}</p>}
+                        {passwordErrors.newPassword && <p>• {passwordErrors.newPassword}</p>}
+                      </div>
+                    )}
+                    {passwordData.newPassword && !passwordErrors.newPassword && !passwordErrors.length && !passwordErrors.uppercase && !passwordErrors.number && !passwordErrors.special && (
+                      <p className="text-green-500 text-sm mt-1">✓ Password is strong</p>
+                    )}
                   </div>
 
+                  {/* Confirm Password */}
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                      Confirm New Password
+                      Confirm New Password <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
+                      name="confirmPassword"
                       value={passwordData.confirmPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                      onChange={handlePasswordInputChange}
                       placeholder="Confirm new password"
-                      className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
+                      className={`w-full px-4 py-3 border ${
+                        passwordErrors.confirmPassword ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'
+                      } bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 ${
+                        passwordErrors.confirmPassword ? 'focus:ring-red-500' : 'focus:ring-blue-500'
+                      } transition-all duration-300`}
                     />
+                    {passwordErrors.confirmPassword && (
+                      <p className="text-red-500 text-sm mt-1">{passwordErrors.confirmPassword}</p>
+                    )}
+                    {passwordData.confirmPassword && passwordData.newPassword === passwordData.confirmPassword && !passwordErrors.confirmPassword && (
+                      <p className="text-green-500 text-sm mt-1">✓ Passwords match</p>
+                    )}
                   </div>
 
-                  <div className="flex gap-4">
+                  {/* Password Requirements Info */}
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Password Requirements:</p>
+                    <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+                      <li>• At least 8 characters</li>
+                      <li>• One uppercase letter (A-Z)</li>
+                      <li>• One number (0-9)</li>
+                      <li>• One special character (!@#$%^&*)</li>
+                    </ul>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-4 pt-6">
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-slate-400 disabled:to-slate-400 text-white font-semibold rounded-lg transition-all"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-slate-400 disabled:to-slate-400 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:cursor-not-allowed"
                     >
                       {loading ? '⏳ Updating...' : '✓ Update Password'}
                     </button>
                     <button
                       type="button"
-                      onClick={() => setShowPasswordForm(false)}
-                      className="flex-1 px-6 py-3 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-semibold rounded-lg transition-all"
+                      onClick={() => {
+                        setShowPasswordForm(false)
+                        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' })
+                        setPasswordErrors({})
+                      }}
+                      className="flex-1 px-6 py-3 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
                     >
                       Cancel
                     </button>
                   </div>
                 </form>
               </div>
-            )} */}
+            )}
 
             {/* Action Buttons */}
             <div className="space-y-4">
@@ -216,14 +360,14 @@ const Profile = () => {
                 Edit Profile
               </button>
 
-              {/* Change Password Button - Commented */}
-              {/* <button
+              {/* Change Password Button */}
+              <button
                 onClick={() => setShowPasswordForm(!showPasswordForm)}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:-translate-y-0.5"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
               >
                 <Lock size={20} />
                 {showPasswordForm ? 'Cancel' : 'Change Password'}
-              </button> */}
+              </button>
 
               {/* Logout Button */}
               <button
